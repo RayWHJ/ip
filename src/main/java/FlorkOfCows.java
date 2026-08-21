@@ -31,28 +31,27 @@ public class FlorkOfCows {
         printLine();
     }
 
-    private static void printList(String tasks[], boolean[] done, int count) {
+    private static void printList(Task[] tasks, int count) {
         printLine();
         if (count == 0) {
             System.out.println(" No tasks.");
         } else {
             for (int i = 0; i < count; i++) {
-                String status = done[i] ? "X" : " ";
-                System.out.println(" " + (i + 1) + ".[" + status + "] " + tasks[i]);
+                String status = tasks[i].isDone() ? "X" : " ";
+                System.out.println(" " + (i + 1) + ".[" + status + "] " + tasks[i].getDescription());
             }
         }
         printLine();
     }
 
-    private static int addTask(String[] tasks, boolean[] done, int count, String line) {
+    private static int addTask(Task[] tasks, int count, String line) {
         if (count >= tasks.length) {
             printLine();
             System.out.println(" Task list is full. Cannot add more tasks.");
             printLine();
             return count;
         } else {
-            tasks[count] = line;
-            done[count] = false;
+            tasks[count] = new Task(line, false);
             printAdded(line);
             return count + 1;
         }
@@ -72,10 +71,8 @@ public class FlorkOfCows {
         System.out.println("What do you need?");
         System.out.println("____________________________________________________________");
 
-        String[] tasks = new String[100];
+        Task[] tasks = new Task[100];
         int task_count = 0;
-
-        boolean[] done = new boolean[100];
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
@@ -88,7 +85,7 @@ public class FlorkOfCows {
                     printBye();
                     break;
                 } else if ("list".equals(line)) {
-                    printList(tasks, done, task_count);
+                    printList(tasks, task_count);
                 } else if (line.startsWith("mark ")) {
                     String[] parts = line.split(" ", 2);
                     try {
@@ -98,8 +95,8 @@ public class FlorkOfCows {
                             System.out.println(" Invalid task number.");
                             printLine();
                         } else {
-                            done[idx - 1] = true;
-                            String entry = "[X] " + tasks[idx - 1];
+                            tasks[idx - 1].markAsDone();
+                            String entry = "[X] " + tasks[idx - 1].getDescription();
                             printMarked(entry);
                         }
                     } catch (Exception e) {
@@ -116,9 +113,9 @@ public class FlorkOfCows {
                             System.out.println(" Invalid task number.");
                             printLine();
                         } else {
-                            done[idx - 1] = false;
-                            String entry = "[ ] " + tasks[idx - 1];
-                            printMarked(entry);
+                            tasks[idx - 1].markAsNotDone();
+                            String entry = "[ ] " + tasks[idx - 1].getDescription();
+                            printUnmarked(entry);
                         }
                     } catch (Exception e) {
                         printLine();
@@ -126,7 +123,7 @@ public class FlorkOfCows {
                         printLine();
                     }
                 } else {
-                    task_count = addTask(tasks, done, task_count, line);
+                    task_count = addTask(tasks, task_count, line);
                 }
             }
         }
