@@ -18,6 +18,13 @@ public class FlorkOfCows {
         printLine();
     }
 
+    private static void printUnmarked(String text) {
+        printLine();
+        System.out.println(" Unmarked it!");
+        System.out.println("   " + text);
+        printLine();
+    }
+
     private static void printBye() {
         printLine();
         System.out.println("See ya!");
@@ -93,6 +100,24 @@ public class FlorkOfCows {
                         } else {
                             done[idx - 1] = true;
                             String entry = "[X] " + tasks[idx - 1];
+                            printMarked(entry);
+                        }
+                    } catch (Exception e) {
+                        printLine();
+                        System.out.println(" Please specify a valid task number to mark.");
+                        printLine();
+                    }
+                } else if (line.startsWith("unmark ")) {
+                    String[] parts = line.split(" ", 2);
+                    try {
+                        int idx = Integer.parseInt(parts[1]);
+                        if (idx < 1 || idx > task_count) {
+                            printLine();
+                            System.out.println(" Invalid task number.");
+                            printLine();
+                        } else {
+                            done[idx - 1] = false;
+                            String entry = "[ ] " + tasks[idx - 1];
                             printMarked(entry);
                         }
                     } catch (Exception e) {
