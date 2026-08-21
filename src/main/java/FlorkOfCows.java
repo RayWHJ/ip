@@ -37,22 +37,25 @@ public class FlorkOfCows {
             System.out.println(" No tasks.");
         } else {
             for (int i = 0; i < count; i++) {
-                String status = tasks[i].isDone() ? "X" : " ";
-                System.out.println(" " + (i + 1) + ".[" + status + "] " + tasks[i].getDescription());
+                System.out.println((i + 1) + "." + tasks[i].toString());
             }
         }
         printLine();
     }
 
-    private static int addTask(Task[] tasks, int count, String line) {
+    private static int addTask(Task[] tasks, int count, Task newTask) {
         if (count >= tasks.length) {
             printLine();
             System.out.println(" Task list is full. Cannot add more tasks.");
             printLine();
             return count;
         } else {
-            tasks[count] = new Task(line, false);
-            printAdded(line);
+            tasks[count] = newTask;
+            printLine();
+            System.out.println(" Okayyy added:");
+            System.out.println("   " + newTask.toString());
+            System.out.println(" You now have " + (count + 1) + " tasks. Jiayous!");
+            printLine();
             return count + 1;
         }
     }
@@ -96,8 +99,7 @@ public class FlorkOfCows {
                             printLine();
                         } else {
                             tasks[idx - 1].markAsDone();
-                            String entry = "[X] " + tasks[idx - 1].getDescription();
-                            printMarked(entry);
+                            printMarked(tasks[idx - 1].toString());
                         }
                     } catch (Exception e) {
                         printLine();
@@ -114,16 +116,38 @@ public class FlorkOfCows {
                             printLine();
                         } else {
                             tasks[idx - 1].markAsNotDone();
-                            String entry = "[ ] " + tasks[idx - 1].getDescription();
-                            printUnmarked(entry);
+                            printUnmarked(tasks[idx - 1].toString());
                         }
                     } catch (Exception e) {
                         printLine();
                         System.out.println(" Please specify a valid task number to mark.");
                         printLine();
                     }
+                } else if (line.startsWith("todo ")) {
+                    String description = line.substring("todo ".length()).trim();
+                    task_count = addTask(tasks, task_count, new Todo(description));
+                } else if (line.startsWith("deadline ")) {
+                    String remainder = line.substring("deadline ".length()).trim();
+
+                    String[] parts = remainder.split(" /by ", 2);
+                    String description = parts[0].trim();
+                    String by = parts.length > 1 ? parts[1].trim() : "";
+
+                    task_count = addTask(tasks, task_count, new Deadline(description, by));
+                } else if (line.startsWith("event ")) {
+                    String remainder = line.substring("event ".length()).trim();
+
+                    String[] fromParts = remainder.split(" /from ", 2);;
+                    String description = fromParts[0].trim();
+                    String timeframe = fromParts.length > 1 ? fromParts[1].trim() : "";
+
+                    String[] toParts = timeframe.split(" /to ", 2);
+                    String from = toParts[0].trim();
+                    String to = toParts.length > 1 ? toParts[1].trim() : "";
+
+                    task_count = addTask(tasks, task_count, new Event(description, from, to));
                 } else {
-                    task_count = addTask(tasks, task_count, line);
+                    task_count = addTask(tasks, task_count, new Task(line, false));
                 }
             }
         }
