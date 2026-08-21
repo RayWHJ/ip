@@ -31,10 +31,16 @@ public class FlorkOfCows {
         printLine();
     }
 
+    private static void printError(String message) {
+        printLine();
+        System.out.println(" Eh lock in!!! " + message);
+        printLine();
+    }
+
     private static void printList(Task[] tasks, int count) {
         printLine();
         if (count == 0) {
-            System.out.println(" No tasks.");
+            System.out.println(" Shiok eh! No tasks.");
         } else {
             for (int i = 0; i < count; i++) {
                 System.out.println((i + 1) + "." + tasks[i].toString());
@@ -46,13 +52,13 @@ public class FlorkOfCows {
     private static int addTask(Task[] tasks, int count, Task newTask) {
         if (count >= tasks.length) {
             printLine();
-            System.out.println(" Task list is full. Cannot add more tasks.");
+            System.out.println(" Wah shag, you already have 100 tasks.");
             printLine();
             return count;
         } else {
             tasks[count] = newTask;
             printLine();
-            System.out.println(" Okayyy added:");
+            System.out.println(" Okayyy added!");
             System.out.println("   " + newTask.toString());
             System.out.println(" You now have " + (count + 1) + " tasks. Jiayous!");
             printLine();
@@ -84,72 +90,92 @@ public class FlorkOfCows {
                 }
                 String line = scanner.nextLine().trim();
 
-                if ("bye".equals(line)) {
-                    printBye();
-                    break;
-                } else if ("list".equals(line)) {
-                    printList(tasks, task_count);
-                } else if (line.startsWith("mark ")) {
-                    String[] parts = line.split(" ", 2);
-                    try {
-                        int idx = Integer.parseInt(parts[1]);
-                        if (idx < 1 || idx > task_count) {
-                            printLine();
-                            System.out.println(" Invalid task number.");
-                            printLine();
-                        } else {
-                            tasks[idx - 1].markAsDone();
-                            printMarked(tasks[idx - 1].toString());
+                try {
+                    if ("bye".equals(line)) {
+                        printBye();
+                        break;
+                    } else if ("list".equals(line)) {
+                        printList(tasks, task_count);
+                    } else if (line.equals("mark") || line.startsWith("mark ")) {
+                        task_count = handleMark(tasks, task_count, line, true);
+                    } else if (line.equals("unmark") || line.startsWith("unmark ")) {
+                        task_count = handleMark(tasks, task_count, line, false);
+                    } else if (line.equals("todo") || line.startsWith("todo ")) {
+                        String description = line.length() > 4 ? line.substring(4).trim() : "";
+                        if (description.isEmpty()) {
+                            throw new FlorkingExceptions("No todo description sia.");
                         }
-                    } catch (Exception e) {
-                        printLine();
-                        System.out.println(" Please specify a valid task number to mark.");
-                        printLine();
-                    }
-                } else if (line.startsWith("unmark ")) {
-                    String[] parts = line.split(" ", 2);
-                    try {
-                        int idx = Integer.parseInt(parts[1]);
-                        if (idx < 1 || idx > task_count) {
-                            printLine();
-                            System.out.println(" Invalid task number.");
-                            printLine();
-                        } else {
-                            tasks[idx - 1].markAsNotDone();
-                            printUnmarked(tasks[idx - 1].toString());
+                        task_count = addTask(tasks, task_count, new Todo(description));
+                    } else if (line.equals("deadline") || line.startsWith("deadline ")) {
+                        String remainder = line.length() > 8 ? line.substring(8).trim() : "";
+                        if (remainder.isEmpty()) {
+                            throw new FlorkingExceptions("No deadline description sia.");
                         }
-                    } catch (Exception e) {
-                        printLine();
-                        System.out.println(" Please specify a valid task number to mark.");
-                        printLine();
+                        String[] parts = remainder.split(" /by ", 2);
+                        String description = parts[0].trim();
+                        if (description.isEmpty()) {
+                            throw new FlorkingExceptions("No deadline description sia.");
+                        }
+                        if (parts.length < 2 || parts[1].trim().isEmpty()) {
+                            throw new FlorkingExceptions(
+                                    "Deadline needs a '/by' date/time one eh, like deadline return book /by Sunday.");
+                        }
+                        String by = parts[1].trim();
+                        task_count = addTask(tasks, task_count, new Deadline(description, by));
+                    } else if (line.equals("event") || line.startsWith("event ")) {
+                        String remainder = line.length() > 5 ? line.substring(5).trim() : "";
+                        if (remainder.isEmpty()) {
+                            throw new FlorkingExceptions("No event description sia.");
+                        }
+                        String[] fromParts = remainder.split(" /from ", 2);
+                        String description = fromParts[0].trim();
+                        if (description.isEmpty()) {
+                            throw new FlorkingExceptions    ("No event description sia.");
+                        }
+                        if (fromParts.length < 2 || fromParts[1].trim().isEmpty()) {
+                            throw new FlorkingExceptions(
+                                    "Event needs a '/from' time one eh, like event meeting /from Mon 2pm /to 4pm.");
+                        }
+                        String timeframe = fromParts[1].trim();
+                        String[] toParts = timeframe.split(" /to ", 2);
+                        String from = toParts[0].trim();
+                        if (toParts.length < 2 || toParts[1].trim().isEmpty()) {
+                            throw new FlorkingExceptions(
+                                    "Event needs a '/to' time one eh, like event meeting /from Mon 2pm /to 4pm.");
+                        }
+                        String to = toParts[1].trim();
+                        task_count = addTask(tasks, task_count, new Event(description, from, to));
+                    } else {
+                        throw new FlorkingExceptions("What you saying? I don't get sia.");
                     }
-                } else if (line.startsWith("todo ")) {
-                    String description = line.substring("todo ".length()).trim();
-                    task_count = addTask(tasks, task_count, new Todo(description));
-                } else if (line.startsWith("deadline ")) {
-                    String remainder = line.substring("deadline ".length()).trim();
-
-                    String[] parts = remainder.split(" /by ", 2);
-                    String description = parts[0].trim();
-                    String by = parts.length > 1 ? parts[1].trim() : "";
-
-                    task_count = addTask(tasks, task_count, new Deadline(description, by));
-                } else if (line.startsWith("event ")) {
-                    String remainder = line.substring("event ".length()).trim();
-
-                    String[] fromParts = remainder.split(" /from ", 2);;
-                    String description = fromParts[0].trim();
-                    String timeframe = fromParts.length > 1 ? fromParts[1].trim() : "";
-
-                    String[] toParts = timeframe.split(" /to ", 2);
-                    String from = toParts[0].trim();
-                    String to = toParts.length > 1 ? toParts[1].trim() : "";
-
-                    task_count = addTask(tasks, task_count, new Event(description, from, to));
-                } else {
-                    task_count = addTask(tasks, task_count, new Task(line, false));
+                } catch (FlorkingExceptions e) {
+                    printError(e.getMessage());
                 }
             }
         }
+    }
+    private static int handleMark(Task[] tasks, int taskCount, String line, boolean markingDone)
+            throws FlorkingExceptions {
+        String[] parts = line.split(" ", 2);
+        if (parts.length < 2 || parts[1].trim().isEmpty()) {
+            throw new FlorkingExceptions("Say properly which task you want " + (markingDone ? "mark" : "unmark") + ".");
+        }
+        int idx;
+        try {
+            idx = Integer.parseInt(parts[1].trim());
+        } catch (NumberFormatException e) {
+            throw new FlorkingExceptions("Oi, '" + parts[1].trim() + "' isn't a valid task number eh.");
+        }
+        if (idx < 1 || idx > taskCount) {
+            throw new FlorkingExceptions("You don't have task " + idx + " oh. You only got " + taskCount + " task(s).");
+        }
+        if (markingDone) {
+            tasks[idx - 1].markAsDone();
+            printMarked(tasks[idx - 1].toString());
+        } else {
+            tasks[idx - 1].markAsNotDone();
+            printUnmarked(tasks[idx - 1].toString());
+        }
+        return taskCount;
     }
 }
