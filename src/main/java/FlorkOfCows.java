@@ -11,25 +11,33 @@ public class FlorkOfCows {
         printLine();
     }
 
+    private static void printMarked(String text) {
+        printLine();
+        System.out.println(" Marked it!");
+        System.out.println("   " + text);
+        printLine();
+    }
+
     private static void printBye() {
         printLine();
         System.out.println("See ya!");
         printLine();
     }
 
-    private static void printList(String tasks[], int count) {
+    private static void printList(String tasks[], boolean[] done, int count) {
         printLine();
         if (count == 0) {
             System.out.println(" No tasks.");
         } else {
             for (int i = 0; i < count; i++) {
-                System.out.println(" " + (i + 1) + ". " + tasks[i]);
+                String status = done[i] ? "X" : " ";
+                System.out.println(" " + (i + 1) + ".[" + status + "] " + tasks[i]);
             }
         }
         printLine();
     }
 
-    private static int addTask(String[] tasks, int count, String line) {
+    private static int addTask(String[] tasks, boolean[] done, int count, String line) {
         if (count >= tasks.length) {
             printLine();
             System.out.println(" Task list is full. Cannot add more tasks.");
@@ -37,6 +45,7 @@ public class FlorkOfCows {
             return count;
         } else {
             tasks[count] = line;
+            done[count] = false;
             printAdded(line);
             return count + 1;
         }
@@ -59,6 +68,8 @@ public class FlorkOfCows {
         String[] tasks = new String[100];
         int task_count = 0;
 
+        boolean[] done = new boolean[100];
+
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
                 if (!scanner.hasNextLine()) {
@@ -70,9 +81,27 @@ public class FlorkOfCows {
                     printBye();
                     break;
                 } else if ("list".equals(line)) {
-                    printList(tasks, task_count);
+                    printList(tasks, done, task_count);
+                } else if (line.startsWith("mark ")) {
+                    String[] parts = line.split(" ", 2);
+                    try {
+                        int idx = Integer.parseInt(parts[1]);
+                        if (idx < 1 || idx > task_count) {
+                            printLine();
+                            System.out.println(" Invalid task number.");
+                            printLine();
+                        } else {
+                            done[idx - 1] = true;
+                            String entry = "[X] " + tasks[idx - 1];
+                            printMarked(entry);
+                        }
+                    } catch (Exception e) {
+                        printLine();
+                        System.out.println(" Please specify a valid task number to mark.");
+                        printLine();
+                    }
                 } else {
-                    task_count = addTask(tasks, task_count, line);
+                    task_count = addTask(tasks, done, task_count, line);
                 }
             }
         }
