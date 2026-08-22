@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class FlorkOfCows {
@@ -37,32 +39,33 @@ public class FlorkOfCows {
         printLine();
     }
 
-    private static void printList(Task[] tasks, int count) {
+    private static void printList(ArrayList<Task> tasks) {
         printLine();
-        if (count == 0) {
+        if (tasks.size() == 0) {
             System.out.println(" Shiok eh! No tasks.");
         } else {
-            for (int i = 0; i < count; i++) {
-                System.out.println((i + 1) + "." + tasks[i].toString());
+            System.out.println(" Shag sia.");
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println(" " + (i + 1) + "." + tasks.get(i).toString());
             }
         }
         printLine();
     }
 
-    private static int addTask(Task[] tasks, int count, Task newTask) {
-        if (count >= tasks.length) {
+    private static int addTask(ArrayList<Task> tasks, Task newTask) {
+        if (tasks.size() >= 100) {
             printLine();
             System.out.println(" Wah shag, you already have 100 tasks.");
             printLine();
-            return count;
+            return tasks.size();
         } else {
-            tasks[count] = newTask;
+            tasks.add(newTask);
             printLine();
             System.out.println(" Okayyy added!");
             System.out.println("   " + newTask.toString());
-            System.out.println(" You now have " + (count + 1) + " tasks. Jiayous!");
+            System.out.println(" You now have " + tasks.size() + " tasks. Jiayous!");
             printLine();
-            return count + 1;
+            return tasks.size();
         }
     }
 
@@ -80,8 +83,7 @@ public class FlorkOfCows {
         System.out.println("What do you need?");
         System.out.println("____________________________________________________________");
 
-        Task[] tasks = new Task[100];
-        int task_count = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
@@ -95,17 +97,17 @@ public class FlorkOfCows {
                         printBye();
                         break;
                     } else if ("list".equals(line)) {
-                        printList(tasks, task_count);
+                        printList(tasks);
                     } else if (line.equals("mark") || line.startsWith("mark ")) {
-                        task_count = handleMark(tasks, task_count, line, true);
+                        handleMark(tasks, line, true);
                     } else if (line.equals("unmark") || line.startsWith("unmark ")) {
-                        task_count = handleMark(tasks, task_count, line, false);
+                        handleMark(tasks, line, false);
                     } else if (line.equals("todo") || line.startsWith("todo ")) {
                         String description = line.length() > 4 ? line.substring(4).trim() : "";
                         if (description.isEmpty()) {
                             throw new FlorkingExceptions("No todo description sia.");
                         }
-                        task_count = addTask(tasks, task_count, new Todo(description));
+                        addTask(tasks, new Todo(description));
                     } else if (line.equals("deadline") || line.startsWith("deadline ")) {
                         String remainder = line.length() > 8 ? line.substring(8).trim() : "";
                         if (remainder.isEmpty()) {
@@ -121,7 +123,7 @@ public class FlorkOfCows {
                                     "Deadline needs a '/by' date/time one eh, like deadline return book /by Sunday.");
                         }
                         String by = parts[1].trim();
-                        task_count = addTask(tasks, task_count, new Deadline(description, by));
+                        addTask(tasks, new Deadline(description, by));
                     } else if (line.equals("event") || line.startsWith("event ")) {
                         String remainder = line.length() > 5 ? line.substring(5).trim() : "";
                         if (remainder.isEmpty()) {
@@ -144,7 +146,9 @@ public class FlorkOfCows {
                                     "Event needs a '/to' time one eh, like event meeting /from Mon 2pm /to 4pm.");
                         }
                         String to = toParts[1].trim();
-                        task_count = addTask(tasks, task_count, new Event(description, from, to));
+                        addTask(tasks, new Event(description, from, to));
+                    } else if (line.equals("delete") || line.startsWith("delete ")) {
+                        handleDelete(tasks, line);
                     } else {
                         throw new FlorkingExceptions("What you saying? I don't get sia.");
                     }
@@ -154,7 +158,7 @@ public class FlorkOfCows {
             }
         }
     }
-    private static int handleMark(Task[] tasks, int taskCount, String line, boolean markingDone)
+    private static int handleMark(ArrayList<Task> tasks, String line, boolean markingDone)
             throws FlorkingExceptions {
         String[] parts = line.split(" ", 2);
         if (parts.length < 2 || parts[1].trim().isEmpty()) {
@@ -166,16 +170,38 @@ public class FlorkOfCows {
         } catch (NumberFormatException e) {
             throw new FlorkingExceptions("Oi, '" + parts[1].trim() + "' isn't a valid task number eh.");
         }
-        if (idx < 1 || idx > taskCount) {
-            throw new FlorkingExceptions("You don't have task " + idx + " oh. You only got " + taskCount + " task(s).");
+        if (idx < 1 || idx > tasks.size()) {
+            throw new FlorkingExceptions("You don't have task " + idx + " eh. You only got " + tasks.size() + " task(s).");
         }
         if (markingDone) {
-            tasks[idx - 1].markAsDone();
-            printMarked(tasks[idx - 1].toString());
+            tasks.get(idx - 1).markAsDone();
+            printMarked(tasks.get(idx - 1).toString());
         } else {
-            tasks[idx - 1].markAsNotDone();
-            printUnmarked(tasks[idx - 1].toString());
+            tasks.get(idx - 1).markAsNotDone();
+            printUnmarked(tasks.get(idx - 1).toString());
         }
-        return taskCount;
+        return tasks.size();
+    }
+
+    private static void handleDelete(ArrayList<Task> tasks, String line) throws FlorkingExceptions {
+        String[] parts = line.split(" ", 2);
+        if (parts.length < 2 || parts[1].trim().isEmpty()) {
+            throw new FlorkingExceptions("Say properly which task you want delete.");
+        }
+        int idx;
+        try {
+            idx = Integer.parseInt(parts[1].trim());
+        } catch (NumberFormatException e) {
+            throw new FlorkingExceptions("Oi, '" + parts[1].trim() + "' isn't a valid task number eh.");
+        }
+        if (idx < 1 || idx > tasks.size()) {
+            throw new FlorkingExceptions("You don't have task " + idx + " eh. You only got " + tasks.size() + " task(s).");
+        }
+        Task removedTask = tasks.remove(idx - 1);
+        printLine();
+        System.out.println(" Cans. Deleted!");
+        System.out.println("   " + removedTask.toString());
+        System.out.println(" Shiok, you have " + tasks.size() + " tasks left. Jiayous!");
+        printLine();
     }
 }
