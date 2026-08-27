@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class Event extends Task {
     protected FlorkDateTime from;
     protected FlorkDateTime to;
@@ -14,6 +16,21 @@ public class Event extends Task {
 
     public String getTo() {
         return to.toDisplayString();
+    }
+
+    @Override
+    public boolean isOccuringOn(LocalDate queryDate) {
+        LocalDate fromDate = from.getDateorNull();
+        LocalDate toDate = to.getDateorNull();
+        if (fromDate == null && toDate != null) {
+            return !queryDate.isBefore(fromDate) && !queryDate.isAfter(toDate);
+        } else if (fromDate != null) {
+            return fromDate.equals(queryDate);
+        } else if (toDate != null) {
+            return toDate.equals(queryDate);
+        } else {
+            return false;
+        }
     }
 
     @Override

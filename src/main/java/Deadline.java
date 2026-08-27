@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class Deadline extends Task {
     protected FlorkDateTime by;
 
@@ -8,6 +10,12 @@ public class Deadline extends Task {
 
     public String getBy() {
         return by.toDisplayString();
+    }
+
+    @Override
+    public boolean isOccuringOn(LocalDate queryDate) {
+        LocalDate byDate = by.getDateorNull();
+        return byDate != null && byDate.equals(queryDate);
     }
 
     @Override

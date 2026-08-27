@@ -54,4 +54,14 @@ public class FlorkDateTime {
             return text;
         }
     }
+
+    public LocalDate getDateorNull() {
+        if (dateTime != null) {
+            return dateTime.toLocalDate();
+        } else if (date != null) {
+            return date;
+        } else {
+            return null;
+        }
+    }
 }
