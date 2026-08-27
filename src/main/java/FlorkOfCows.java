@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -55,7 +56,7 @@ public class FlorkOfCows {
         printLine();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String banner = "  ______ _            _     ____   __  _____                  \n"
                 + " |  ____| |          | |   / __ \\ / _|/ ____|                 \n"
                 + " | |__  | | ___  _ __| | _| |  | | |_| |     _____      _____ \n"
@@ -69,7 +70,7 @@ public class FlorkOfCows {
         System.out.println("What do you need?");
         System.out.println("____________________________________________________________");
 
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = Storage.load();
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
