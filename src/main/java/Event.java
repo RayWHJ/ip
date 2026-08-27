@@ -17,6 +17,11 @@ public class Event extends Task {
     }
 
     @Override
+    public String toSaveFormat() {
+        return "E | " + super.toSaveFormat() + " | " + this.getFrom() + " | " + this.getTo();
+    }
+
+    @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + this.getFrom() + " to: " + this.getTo() + ")";
     }

@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -45,24 +46,17 @@ public class FlorkOfCows {
         printLine();
     }
 
-    private static int addTask(ArrayList<Task> tasks, Task newTask) {
-        if (tasks.size() >= 100) {
-            printLine();
-            System.out.println(" Wah shag, you already have 100 tasks.");
-            printLine();
-            return tasks.size();
-        } else {
-            tasks.add(newTask);
-            printLine();
-            System.out.println(" Okayyy added!");
-            System.out.println("   " + newTask.toString());
-            System.out.println(" You now have " + tasks.size() + " tasks. Jiayous!");
-            printLine();
-            return tasks.size();
-        }
+    private static void addTask(ArrayList<Task> tasks, Task newTask) throws FlorkingExceptions {
+        tasks.add(newTask);
+        saveOrThrow(tasks);
+        printLine();
+        System.out.println(" Okayyy added!");
+        System.out.println("   " + newTask.toString());
+        System.out.println(" You now have " + tasks.size() + " tasks. Jiayous!");
+        printLine();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String banner = "  ______ _            _     ____   __  _____                  \n"
                 + " |  ____| |          | |   / __ \\ / _|/ ____|                 \n"
                 + " | |__  | | ___  _ __| | _| |  | | |_| |     _____      _____ \n"
@@ -76,7 +70,13 @@ public class FlorkOfCows {
         System.out.println("What do you need?");
         System.out.println("____________________________________________________________");
 
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks;
+        try {
+            tasks = Storage.load();
+        } catch (IOException e) {
+            System.out.println(" Warning: couldn't load saved task (" + e.getMessage() + "). Starting new list.");
+            tasks = new ArrayList<>();
+        }
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
@@ -182,9 +182,14 @@ public class FlorkOfCows {
         int idx = parseTaskIndex(tasks, line, markingDone ? "mark" : "unmark");
         if (markingDone) {
             tasks.get(idx - 1).markAsDone();
-            printMarked(tasks.get(idx - 1).toString());
         } else {
             tasks.get(idx - 1).markAsNotDone();
+        }
+
+        saveOrThrow(tasks);
+        if (markingDone) {
+            printMarked(tasks.get(idx - 1).toString());
+        } else {
             printUnmarked(tasks.get(idx - 1).toString());
         }
     }
@@ -192,6 +197,7 @@ public class FlorkOfCows {
     private static void handleDelete(ArrayList<Task> tasks, String line) throws FlorkingExceptions {
         int idx = parseTaskIndex(tasks, line, "delete");
         Task removedTask = tasks.remove(idx - 1);
+        saveOrThrow(tasks);
         printLine();
         System.out.println(" Cans. Deleted!");
         System.out.println("   " + removedTask.toString());
@@ -215,5 +221,13 @@ public class FlorkOfCows {
             throw new FlorkingExceptions("You don't have task " + idx + " eh. You only got " + tasks.size() + " task(s).");
         }
         return idx;
+    }
+
+    private static void saveOrThrow(ArrayList<Task> tasks) throws FlorkingExceptions {
+        try {
+            Storage.save(tasks);
+        } catch (Exception e) {
+            throw new FlorkingExceptions("Cannot save tasks to file. " + e.getMessage());
+        }
     }
 }
