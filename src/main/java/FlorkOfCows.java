@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -41,6 +43,25 @@ public class FlorkOfCows {
             System.out.println(" Shag sia.");
             for (int i = 0; i < tasks.size(); i++) {
                 System.out.println(" " + (i + 1) + "." + tasks.get(i).toString());
+            }
+        }
+        printLine();
+    }
+
+    private static void printOnDate(ArrayList<Task> tasks, LocalDate queryDate) {
+        printLine();
+        ArrayList<Task> matches = new ArrayList<>();
+        for (Task task: tasks) {
+            if (task.isOccuringOn(queryDate)) {
+                matches.add(task);
+            }
+        }
+        if (matches.isEmpty()) {
+            System.out.println(" Nice lah! No tasks on " + queryDate + ".");
+        } else {
+            System.out.println(" Remember ah, got tasks on " + queryDate + ":");
+            for (int i = 0; i < matches.size(); i++) {
+                System.out.println(" " + (i + 1) + "." + matches.get(i).toString());
             }
         }
         printLine();
@@ -164,6 +185,20 @@ public class FlorkOfCows {
                             }
                             String to = toParts[1].trim();
                             addTask(tasks, new Event(eventDescription, from, to));
+                            break;
+                        }
+                        case ON: {
+                            String dateArg = line.length() > 2 ? line.substring(2).trim() : "";
+                            if (dateArg.isEmpty()) {
+                                throw new FlorkingExceptions("No date provided sia.");
+                            }
+                            LocalDate queryDate;
+                            try {
+                                queryDate = LocalDate.parse(dateArg);
+                            } catch (DateTimeException e) {
+                                throw new FlorkingExceptions("'" + dateArg + "' isn't a valid date. Use yyyy-MM-dd, e.g. 2019-12-02.");
+                            }
+                            printOnDate(tasks, queryDate);
                             break;
                         }
                         case UNKNOWN:

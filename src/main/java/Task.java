@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class Task {
     protected String description;
     protected boolean isDone;
@@ -26,6 +28,10 @@ public class Task {
 
     public void markAsNotDone() {
         isDone = false;
+    }
+
+    public boolean isOccuringOn(LocalDate queryDate) {
+        return false; // Default implementation for tasks without specific dates
     }
 
     public String toSaveFormat() {
