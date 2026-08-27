@@ -1,3 +1,5 @@
+package florkofcows.storage;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,11 +8,16 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import florkofcows.task.Deadline;
+import florkofcows.task.Event;
+import florkofcows.task.Task;
+import florkofcows.task.Todo;
+
 public class Storage {
     private final Path filePath;
 
     public Storage() {
-        this(Path.of("data", "florkofcows.txt"));
+        this(Path.of(System.getProperty("user.dir"), "data", "florkofcows.txt"));
     }
 
     public Storage(String filePath) {

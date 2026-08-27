@@ -1,3 +1,11 @@
+package florkofcows;
+
+import florkofcows.command.Command;
+import florkofcows.exception.FlorkingExceptions;
+import florkofcows.parser.Parser;
+import florkofcows.storage.Storage;
+import florkofcows.task.TaskList;
+import florkofcows.ui.Ui;
 import java.io.IOException;
 
 public class FlorkOfCows {

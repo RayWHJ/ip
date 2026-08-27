@@ -1,6 +1,11 @@
+package florkofcows.ui;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import florkofcows.task.Task;
+import florkofcows.task.TaskList;
 
 public class Ui {
     private final Scanner scanner = new Scanner(System.in);

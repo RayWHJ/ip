@@ -1,5 +1,9 @@
+package florkofcows.task;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+
+import florkofcows.exception.FlorkingExceptions;
 
 public class TaskList {
     private final ArrayList<Task> tasks;
