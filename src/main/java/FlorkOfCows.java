@@ -70,7 +70,13 @@ public class FlorkOfCows {
         System.out.println("What do you need?");
         System.out.println("____________________________________________________________");
 
-        ArrayList<Task> tasks = Storage.load();
+        ArrayList<Task> tasks;
+        try {
+            tasks = Storage.load();
+        } catch (IOException e) {
+            System.out.println(" Warning: couldn't load saved task (" + e.getMessage() + "). Starting new list.");
+            tasks = new ArrayList<>();
+        }
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
