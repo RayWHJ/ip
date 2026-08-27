@@ -19,10 +19,10 @@ public class Event extends Task {
     }
 
     @Override
-    public boolean isOccuringOn(LocalDate queryDate) {
+    public boolean isOccurringOn(LocalDate queryDate) {
         LocalDate fromDate = from.getDateorNull();
         LocalDate toDate = to.getDateorNull();
-        if (fromDate == null && toDate != null) {
+        if (fromDate != null && toDate != null) {
             return !queryDate.isBefore(fromDate) && !queryDate.isAfter(toDate);
         } else if (fromDate != null) {
             return fromDate.equals(queryDate);

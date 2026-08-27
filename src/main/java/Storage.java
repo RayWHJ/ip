@@ -7,12 +7,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Storage {
-    private static final Path DATA_FOLDER = Path.of("data");
-    private static final Path DATA_FILE = DATA_FOLDER.resolve("florkofcows.txt");
+    private final Path filePath;
 
-    public static void save(ArrayList<Task> tasks) throws IOException {
-        Files.createDirectories(DATA_FOLDER);
-        try (BufferedWriter writer = Files.newBufferedWriter(DATA_FILE)) {
+    public Storage() {
+        this(Path.of("data", "florkofcows.txt"));
+    }
+
+    public Storage(String filePath) {
+        this(Path.of(filePath));
+    }
+
+    public Storage(Path filePath) {
+        this.filePath = filePath;
+    }
+
+    public void save(ArrayList<Task> tasks) throws IOException {
+        Path parent = filePath.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
             for (Task task : tasks) {
                 writer.write(task.toSaveFormat());
                 writer.newLine();
@@ -20,10 +34,10 @@ public class Storage {
         }
     }
 
-    public static ArrayList<Task> load() throws IOException {
+    public ArrayList<Task> load() throws IOException {
         List<String> lines;
         try {
-            lines = Files.readAllLines(DATA_FILE);
+            lines = Files.readAllLines(filePath);
         } catch (NoSuchFileException e) {
             return new ArrayList<>();
         }
@@ -44,7 +58,7 @@ public class Storage {
         return tasks;
     }
 
-    private static Task parseLine(String line) {
+    private Task parseLine(String line) {
         String[] parts = line.split(" \\| ");
         if (parts.length < 3) {
             throw new IllegalArgumentException("Not enough fields: " + line);

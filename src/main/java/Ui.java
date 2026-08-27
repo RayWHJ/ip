@@ -41,7 +41,7 @@ public class Ui {
         System.out.println(" Warning: couldn't load saved tasks (" + message + "). Starting fresh.");
     }
 
-    public void showTaskList(ArrayList<Task> tasks) {
+    public void showTaskList(TaskList tasks) {
         showLine();
         if (tasks.isEmpty()) {
             System.out.println(" Shiok eh! No tasks.");
