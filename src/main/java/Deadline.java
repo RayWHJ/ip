@@ -1,18 +1,18 @@
 public class Deadline extends Task {
-    protected String by;
+    protected FlorkDateTime by;
 
     public Deadline(String description, String by) {
         super(description);
-        this.by = by;
+        this.by = FlorkDateTime.parse(by);
     }
 
     public String getBy() {
-        return by;
+        return by.toDisplayString();
     }
 
     @Override
     public String toSaveFormat() {
-        return "D | " + super.toSaveFormat() + " | " + this.getBy();
+        return "D | " + super.toSaveFormat() + " | " + by.toSaveFormat();
     }
 
     @Override
