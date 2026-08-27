@@ -19,7 +19,7 @@ $raw = Get-Content $PlanPath -Raw -ErrorAction Stop
 # <expected text>
 # ```
 
-$pattern = [regex]::new('(?ms)^###\s*Test:\s*(?<id>[^\r\n]+)\s*\r?\n(?:Aim:\s*(?<aim>[^\r\n]+)\s*\r?\n)?Command:\s*(?<cmd>[^\r\n]+)\s*\r?\nExpected:\s*\r?\n```(?:\\w*)\r?\n(?<expected>.*?)\r?\n```')
+$pattern = [regex]::new('(?ms)^###\s*Test:\s*(?<id>[^\r\n]+)\s*\r?\n(?:Aim:\s*(?<aim>[^\r\n]+)\s*\r?\n)?Command:\s*(?<cmd>[^\r\n]+)\s*\r?\nExpected:\s*\r?\n```\r?\n(?<expected>.*?)\r?\n```')
 $matches = $pattern.Matches($raw)
 
 if ($matches.Count -eq 0) {
@@ -36,7 +36,7 @@ foreach ($m in $matches) {
     $cmd = $m.Groups['cmd'].Value.Trim()
     $expectedRaw = $m.Groups['expected'].Value
 
-    Write-Host "===== Test $testIndex: $id ====="
+    Write-Host "===== Test ${testIndex}: ${id} ====="
     Write-Host "Aim: $aim"
     Write-Host "Command: $cmd"
 

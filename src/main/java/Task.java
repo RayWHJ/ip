@@ -30,7 +30,7 @@ public class Task {
         isDone = false;
     }
 
-    public boolean isOccuringOn(LocalDate queryDate) {
+    public boolean isOccurringOn(LocalDate queryDate) {
         return false; // Default implementation for tasks without specific dates
     }
 
