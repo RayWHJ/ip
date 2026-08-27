@@ -1,5 +1,16 @@
+package florkofcows.command;
+
 import java.io.IOException;
 import java.time.LocalDate;
+
+import florkofcows.exception.FlorkingExceptions;
+import florkofcows.storage.Storage;
+import florkofcows.task.Deadline;
+import florkofcows.task.Event;
+import florkofcows.task.Task;
+import florkofcows.task.TaskList;
+import florkofcows.task.Todo;
+import florkofcows.ui.Ui;
 
 public abstract class Command {
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws FlorkingExceptions;

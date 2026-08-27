@@ -1,3 +1,5 @@
+package florkofcows.task;
+
 import java.time.LocalDate;
 
 public class Task {
