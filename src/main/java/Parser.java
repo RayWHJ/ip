@@ -2,15 +2,58 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 public class Parser {
-    public static Command parseCommand(String line) {
-        if (line == null || line.trim().isEmpty()) {
-            return Command.UNKNOWN;
+    public static Command parse(String fullCommand) throws FlorkingExceptions {
+        if (fullCommand == null || fullCommand.trim().isEmpty()) {
+            throw new FlorkingExceptions("What you saying? I don't get sia.");
         }
-        String commandWord = line.split(" ")[0].toUpperCase();
+
+        String trimmed = fullCommand.trim();
+        String[] words = trimmed.split(" ", 2);
+        String commandWord = words[0].toUpperCase();
+        CommandType commandType;
         try {
-            return Command.valueOf(commandWord);
+            commandType = CommandType.valueOf(commandWord);
         } catch (IllegalArgumentException e) {
-            return Command.UNKNOWN;
+            throw new FlorkingExceptions("What you saying? I don't get sia.");
+        }
+
+        switch (commandType) {
+        case BYE:
+            return new Command.ExitCommand();
+        case LIST:
+            return new Command.ListCommand();
+        case ON:
+            String dateArg = words.length > 1 ? words[1].trim() : "";
+            return new Command.OnDateCommand(parseDateArg(dateArg));
+        case TODO:
+            return new Command.AddTodoCommand(parseTodoDescription(trimmed));
+        case DEADLINE:
+            String[] deadlineParts = parseDeadlineParts(trimmed);
+            return new Command.AddDeadlineCommand(deadlineParts[0], deadlineParts[1]);
+        case EVENT:
+            String[] eventParts = parseEventParts(trimmed);
+            return new Command.AddEventCommand(eventParts[0], eventParts[1], eventParts[2]);
+        case MARK:
+            return new Command.MarkCommand(parseIndexArg(words, "mark"), true);
+        case UNMARK:
+            return new Command.MarkCommand(parseIndexArg(words, "unmark"), false);
+        case DELETE:
+            return new Command.DeleteCommand(parseIndexArg(words, "delete"));
+        default:
+            throw new FlorkingExceptions("What you saying? I don't get sia.");
+        }
+    }
+
+    private static int parseIndexArg(String[] words, String actionName) throws FlorkingExceptions {
+        String argument = words.length > 1 ? words[1].trim() : "";
+        if (argument.isEmpty()) {
+            throw new FlorkingExceptions("Say properly which task you want " + actionName + ".");
+        }
+        try {
+            int index = Integer.parseInt(argument);
+            return index;
+        } catch (NumberFormatException e) {
+            throw new FlorkingExceptions("Oi, '" + argument + "' isn't a valid task number eh.");
         }
     }
 
