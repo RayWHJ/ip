@@ -1,83 +1,10 @@
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class FlorkOfCows {
-    private static void printLine() {
-        System.out.println("____________________________________________________________");
-    }
-
-    private static void printMarked(String text) {
-        printLine();
-        System.out.println(" Marked it!");
-        System.out.println("   " + text);
-        printLine();
-    }
-
-    private static void printUnmarked(String text) {
-        printLine();
-        System.out.println(" Unmarked it!");
-        System.out.println("   " + text);
-        printLine();
-    }
-
-    private static void printBye() {
-        printLine();
-        System.out.println("See ya!");
-        printLine();
-    }
-
-    private static void printError(String message) {
-        printLine();
-        System.out.println(" Eh lock in!!! " + message);
-        printLine();
-    }
-
-    private static void printList(ArrayList<Task> tasks) {
-        printLine();
-        if (tasks.size() == 0) {
-            System.out.println(" Shiok eh! No tasks.");
-        } else {
-            System.out.println(" Shag sia.");
-            for (int i = 0; i < tasks.size(); i++) {
-                System.out.println(" " + (i + 1) + "." + tasks.get(i).toString());
-            }
-        }
-        printLine();
-    }
-
-    private static void printOnDate(ArrayList<Task> tasks, LocalDate queryDate) {
-        printLine();
-        ArrayList<Task> matches = new ArrayList<>();
-        for (Task task: tasks) {
-            if (task.isOccuringOn(queryDate)) {
-                matches.add(task);
-            }
-        }
-        if (matches.isEmpty()) {
-            System.out.println(" Nice lah! No tasks on " + queryDate + ".");
-        } else {
-            System.out.println(" Remember ah, got tasks on " + queryDate + ":");
-            for (int i = 0; i < matches.size(); i++) {
-                System.out.println(" " + (i + 1) + "." + matches.get(i).toString());
-            }
-        }
-        printLine();
-    }
-
-    private static void addTask(ArrayList<Task> tasks, Task newTask) throws FlorkingExceptions {
-        tasks.add(newTask);
-        saveOrThrow(tasks);
-        printLine();
-        System.out.println(" Okayyy added!");
-        System.out.println("   " + newTask.toString());
-        System.out.println(" You now have " + tasks.size() + " tasks. Jiayous!");
-        printLine();
-    }
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         String banner = "  ______ _            _     ____   __  _____                  \n"
                 + " |  ____| |          | |   / __ \\ / _|/ ____|                 \n"
                 + " | |__  | | ___  _ __| | _| |  | | |_| |     _____      _____ \n"
@@ -85,134 +12,138 @@ public class FlorkOfCows {
                 + " | |    | | (_) | |  |   <| |__| | | | |___| (_) \\ V  V /\\__ \\\n"
                 + " |_|    |_|\\___/|_|  |_|\\_\\\\____/|_|  \\_____\\___/ \\_/\\_/ |___/\n";
 
-        System.out.println("____________________________________________________________");
-        System.out.println(banner);
-        System.out.println("Greetings! I'm FlorkOfCows.");
-        System.out.println("What do you need?");
-        System.out.println("____________________________________________________________");
+        Ui ui = new Ui();
+        ui.showWelcome(banner);
 
         ArrayList<Task> tasks;
         try {
             tasks = Storage.load();
         } catch (IOException e) {
-            System.out.println(" Warning: couldn't load saved task (" + e.getMessage() + "). Starting new list.");
             tasks = new ArrayList<>();
+            ui.showLoadingError(e.getMessage());
         }
 
-        try (Scanner scanner = new Scanner(System.in)) {
-            while (true) {
-                if (!scanner.hasNextLine()) {
-                    break;
-                }
-                String line = scanner.nextLine().trim();
+        while (ui.hasNextCommand()) {
+            String line = ui.readCommand();
 
-                if (line.isEmpty()) {
-                    continue;
-                }
+            if (line.isEmpty()) {
+                continue;
+            }
 
-                String commandWord = line.split(" ")[0].toUpperCase();
-                Command command;
+            String commandWord = line.split(" ")[0].toUpperCase();
+            Command command;
 
-                try {
-                    command = Command.valueOf(commandWord);
-                } catch (IllegalArgumentException e) {
-                    command = Command.UNKNOWN;
-                }
+            try {
+                command = Command.valueOf(commandWord);
+            } catch (IllegalArgumentException e) {
+                command = Command.UNKNOWN;
+            }
 
-                try {
-                    switch (command) {
-                        case BYE:
-                            printBye();
-                            return;
-                        case LIST:
-                            printList(tasks);
-                            break;
-                        case MARK:
-                            handleMark(tasks, line, true);
-                            break;
-                        case UNMARK:
-                            handleMark(tasks, line, false);
-                            break;
-                        case DELETE:
-                            handleDelete(tasks, line);
-                            break;
-                        case TODO: {
-                            String description = line.length() > 4 ? line.substring(4).trim() : "";
-                            if (description.isEmpty()) {
-                                throw new FlorkingExceptions("No todo description sia.");
-                            }
-                            addTask(tasks, new Todo(description));
-                            break;
+            try {
+                switch (command) {
+                    case BYE:
+                        ui.showBye();
+                        return;
+                    case LIST:
+                        ui.showTaskList(tasks);
+                        break;
+                    case MARK:
+                        handleMark(tasks, line, true, ui);
+                        break;
+                    case UNMARK:
+                        handleMark(tasks, line, false, ui);
+                        break;
+                    case DELETE:
+                        handleDelete(tasks, line, ui);
+                        break;
+                    case ON: {
+                        String dateArg = line.length() > 2 ? line.substring(2).trim() : "";
+                        if (dateArg.isEmpty()) {
+                            throw new FlorkingExceptions("Which date? Try: on 2019-12-02");
                         }
-                        case DEADLINE: {
-                            String remainder = line.length() > 8 ? line.substring(8).trim() : "";
-                            if (remainder.isEmpty()) {
-                                throw new FlorkingExceptions("No deadline description sia.");
-                            }
-                            String[] parts = remainder.split(" /by ", 2);
-                            String deadlineDescription = parts[0].trim();
-                            if (deadlineDescription.isEmpty()) {
-                                throw new FlorkingExceptions("No deadline description sia.");
-                            }
-                            if (parts.length < 2 || parts[1].trim().isEmpty()) {
-                                throw new FlorkingExceptions(
-                                        "Deadline needs a '/by' date/time one eh, like deadline return book /by Sunday.");
-                            }
-                            String by = parts[1].trim();
-                            addTask(tasks, new Deadline(deadlineDescription, by));
-                            break;
+                        LocalDate queryDate;
+                        try {
+                            queryDate = LocalDate.parse(dateArg);
+                        } catch (DateTimeParseException e) {
+                            throw new FlorkingExceptions(
+                                    "'" + dateArg + "' isn't a valid date. Use yyyy-MM-dd, e.g. 2019-12-02.");
                         }
-                        case EVENT: {
-                            String eventRemainder = line.length() > 5 ? line.substring(5).trim() : "";
-                            if (eventRemainder.isEmpty()) {
-                                throw new FlorkingExceptions("No event description sia.");
+                        ArrayList<Task> matches = new ArrayList<>();
+                        for (Task task : tasks) {
+                            if (task.isOccurringOn(queryDate)) {
+                                matches.add(task);
                             }
-                            String[] fromParts = eventRemainder.split(" /from ", 2);
-                            String eventDescription = fromParts[0].trim();
-                            if (eventDescription.isEmpty()) {
-                                throw new FlorkingExceptions("No event description sia.");
-                            }
-                            if (fromParts.length < 2 || fromParts[1].trim().isEmpty()) {
-                                throw new FlorkingExceptions(
-                                        "Event needs a '/from' time one eh, like event meeting /from Mon 2pm /to 4pm.");
-                            }
-                            String timeframe = fromParts[1].trim();
-                            String[] toParts = timeframe.split(" /to ", 2);
-                            String from = toParts[0].trim();
-                            if (toParts.length < 2 || toParts[1].trim().isEmpty()) {
-                                throw new FlorkingExceptions(
-                                        "Event needs a '/to' time one eh, like event meeting /from Mon 2pm /to 4pm.");
-                            }
-                            String to = toParts[1].trim();
-                            addTask(tasks, new Event(eventDescription, from, to));
-                            break;
                         }
-                        case ON: {
-                            String dateArg = line.length() > 2 ? line.substring(2).trim() : "";
-                            if (dateArg.isEmpty()) {
-                                throw new FlorkingExceptions("No date provided sia.");
-                            }
-                            LocalDate queryDate;
-                            try {
-                                queryDate = LocalDate.parse(dateArg);
-                            } catch (DateTimeException e) {
-                                throw new FlorkingExceptions("'" + dateArg + "' isn't a valid date. Use yyyy-MM-dd, e.g. 2019-12-02.");
-                            }
-                            printOnDate(tasks, queryDate);
-                            break;
-                        }
-                        case UNKNOWN:
-                        default:
-                            throw new FlorkingExceptions("What you saying? I don't get sia.");
+                        ui.showTasksOnDate(matches, queryDate);
+                        break;
                     }
-                } catch (FlorkingExceptions e) {
-                    printError(e.getMessage());
+                    case TODO: {
+                        String description = line.length() > 4 ? line.substring(4).trim() : "";
+                        if (description.isEmpty()) {
+                            throw new FlorkingExceptions("No todo description sia.");
+                        }
+                        addTask(tasks, new Todo(description), ui);
+                        break;
+                    }
+                    case DEADLINE: {
+                        String remainder = line.length() > 8 ? line.substring(8).trim() : "";
+                        if (remainder.isEmpty()) {
+                            throw new FlorkingExceptions("No deadline description sia.");
+                        }
+                        String[] parts = remainder.split(" /by ", 2);
+                        String deadlineDescription = parts[0].trim();
+                        if (deadlineDescription.isEmpty()) {
+                            throw new FlorkingExceptions("No deadline description sia.");
+                        }
+                        if (parts.length < 2 || parts[1].trim().isEmpty()) {
+                            throw new FlorkingExceptions(
+                                    "Deadline needs a '/by' date/time one eh, like deadline return book /by Sunday.");
+                        }
+                        String by = parts[1].trim();
+                        addTask(tasks, new Deadline(deadlineDescription, by), ui);
+                        break;
+                    }
+                    case EVENT: {
+                        String eventRemainder = line.length() > 5 ? line.substring(5).trim() : "";
+                        if (eventRemainder.isEmpty()) {
+                            throw new FlorkingExceptions("No event description sia.");
+                        }
+                        String[] fromParts = eventRemainder.split(" /from ", 2);
+                        String eventDescription = fromParts[0].trim();
+                        if (eventDescription.isEmpty()) {
+                            throw new FlorkingExceptions("No event description sia.");
+                        }
+                        if (fromParts.length < 2 || fromParts[1].trim().isEmpty()) {
+                            throw new FlorkingExceptions(
+                                    "Event needs a '/from' time one eh, like event meeting /from Mon 2pm /to 4pm.");
+                        }
+                        String timeframe = fromParts[1].trim();
+                        String[] toParts = timeframe.split(" /to ", 2);
+                        String from = toParts[0].trim();
+                        if (toParts.length < 2 || toParts[1].trim().isEmpty()) {
+                            throw new FlorkingExceptions(
+                                    "Event needs a '/to' time one eh, like event meeting /from Mon 2pm /to 4pm.");
+                        }
+                        String to = toParts[1].trim();
+                        addTask(tasks, new Event(eventDescription, from, to), ui);
+                        break;
+                    }
+                    case UNKNOWN:
+                    default:
+                        throw new FlorkingExceptions("What you saying? I don't get sia.");
                 }
+            } catch (FlorkingExceptions e) {
+                ui.showError(e.getMessage());
             }
         }
     }
+    private static void addTask(ArrayList<Task> tasks, Task newTask, Ui ui) throws FlorkingExceptions {
+        tasks.add(newTask);
+        saveOrThrow(tasks);
+        ui.showTaskAdded(newTask, tasks.size());
+    }
 
-    private static void handleMark(ArrayList<Task> tasks, String line, boolean markingDone)
+    private static void handleMark(ArrayList<Task> tasks, String line, boolean markingDone, Ui ui)
             throws FlorkingExceptions {
         int idx = parseTaskIndex(tasks, line, markingDone ? "mark" : "unmark");
         if (markingDone) {
@@ -220,24 +151,19 @@ public class FlorkOfCows {
         } else {
             tasks.get(idx - 1).markAsNotDone();
         }
-
         saveOrThrow(tasks);
         if (markingDone) {
-            printMarked(tasks.get(idx - 1).toString());
+            ui.showTaskMarked(tasks.get(idx - 1).toString());
         } else {
-            printUnmarked(tasks.get(idx - 1).toString());
+            ui.showTaskUnmarked(tasks.get(idx - 1).toString());
         }
     }
 
-    private static void handleDelete(ArrayList<Task> tasks, String line) throws FlorkingExceptions {
+    private static void handleDelete(ArrayList<Task> tasks, String line, Ui ui) throws FlorkingExceptions {
         int idx = parseTaskIndex(tasks, line, "delete");
         Task removedTask = tasks.remove(idx - 1);
         saveOrThrow(tasks);
-        printLine();
-        System.out.println(" Cans. Deleted!");
-        System.out.println("   " + removedTask.toString());
-        System.out.println(" Shiok, you have " + tasks.size() + " tasks left. Jiayous!");
-        printLine();
+        ui.showTaskDeleted(removedTask, tasks.size());
     }
 
     private static int parseTaskIndex(ArrayList<Task> tasks, String line, String actionName)
@@ -261,8 +187,8 @@ public class FlorkOfCows {
     private static void saveOrThrow(ArrayList<Task> tasks) throws FlorkingExceptions {
         try {
             Storage.save(tasks);
-        } catch (Exception e) {
-            throw new FlorkingExceptions("Cannot save tasks to file. " + e.getMessage());
+        } catch (IOException e) {
+            throw new FlorkingExceptions("Cannot save to disk eh: " + e.getMessage());
         }
     }
 }

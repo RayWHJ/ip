@@ -13,7 +13,7 @@ public class Deadline extends Task {
     }
 
     @Override
-    public boolean isOccuringOn(LocalDate queryDate) {
+    public boolean isOccurringOn(LocalDate queryDate) {
         LocalDate byDate = by.getDateorNull();
         return byDate != null && byDate.equals(queryDate);
     }
