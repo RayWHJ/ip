@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import florkofcows.exception.FlorkingExceptions;
 
 /**
- * Wraps the in-memory list of tasks and provides operations to add, mark,
- * unmark, delete, and query them by date.
+ * Mutable list wrapper for Task objects with basic operations.
+ *
+ * Provides add/mark/unmark/delete operations and simple index parsing/validation
+ * used by command implementations.
  */
 public class TaskList {
     private final ArrayList<Task> tasks;

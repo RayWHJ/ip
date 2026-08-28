@@ -9,8 +9,10 @@ import florkofcows.ui.Ui;
 import java.io.IOException;
 
 /**
- * Entry point for the FlorkOfCows chatbot, a command-line task tracker
- * supporting todos, deadlines, and events.
+ * Main application entry point for FlorkOfCows.
+ *
+ * Sets up UI, storage and the task list, then enters the main command loop.
+ * Supports todos, deadlines, and events.
  */
 public class FlorkOfCows {
     private final Ui ui;

@@ -7,6 +7,13 @@ import java.util.Scanner;
 import florkofcows.task.Task;
 import florkofcows.task.TaskList;
 
+/**
+ * User interaction helper for console I/O.
+ *
+ * All public methods provide simple console operations used by the application
+ * to read input and display messages. Keep logic here minimal; UI should not
+ * perform business logic.
+ */
 public class Ui {
     private final Scanner scanner = new Scanner(System.in);
 

@@ -2,6 +2,9 @@ package florkofcows.task;
 
 import java.time.LocalDate;
 
+/**
+ * Deadline task with a single by-date/time or free-text value.
+ */
 public class Deadline extends Task {
     protected FlorkDateTime by;
 
