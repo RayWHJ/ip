@@ -8,6 +8,10 @@ import florkofcows.task.TaskList;
 import florkofcows.ui.Ui;
 import java.io.IOException;
 
+/**
+ * Entry point for the FlorkOfCows chatbot, a command-line task tracker
+ * supporting todos, deadlines, and events.
+ */
 public class FlorkOfCows {
     private final Ui ui;
     private final Storage storage;
@@ -18,6 +22,12 @@ public class FlorkOfCows {
         this.storage = new Storage();
     }
 
+    /**
+     * Starts the chatbot: loads any saved tasks, then repeatedly reads,
+     * parses, and executes user commands until an exit command is given.
+     *
+     * @param args unused command-line arguments.
+     */
     public static void main(String[] args) {
         new FlorkOfCows().run();
     }

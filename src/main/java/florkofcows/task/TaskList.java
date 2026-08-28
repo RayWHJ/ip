@@ -5,21 +5,46 @@ import java.util.ArrayList;
 
 import florkofcows.exception.FlorkingExceptions;
 
+/**
+ * Wraps the in-memory list of tasks and provides operations to add, mark,
+ * unmark, delete, and query them by date.
+ */
 public class TaskList {
     private final ArrayList<Task> tasks;
 
+    /**
+     * Creates a task list backed by the given existing list of tasks,
+     * typically used when restoring tasks loaded from disk.
+     *
+     * @param tasks the initial list of tasks.
+     */
     public TaskList(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
 
+    /**
+     * Creates an empty task list.
+     */
     public TaskList() {
         this(new ArrayList<>());
     }
 
+    /**
+     * Adds a task to the end of the list.
+     *
+     * @param task the task to add.
+     */
     public void add(Task task) {
         tasks.add(task);
     }
 
+    /**
+     * Marks the task at the given 1-based index as done.
+     *
+     * @param idx the 1-based index of the task to mark.
+     * @return the task that was marked.
+     * @throws FlorkingExceptions if idx is out of range.
+     */
     public Task mark(int idx) throws FlorkingExceptions {
         validateIndex(idx, "mark");
         Task task = tasks.get(idx - 1);
@@ -27,6 +52,13 @@ public class TaskList {
         return task;
     }
 
+    /**
+     * Marks the task at the given 1-based index as not done.
+     *
+     * @param idx the 1-based index of the task to unmark.
+     * @return the task that was unmarked.
+     * @throws FlorkingExceptions if idx is out of range.
+     */
     public Task unmark(int idx) throws FlorkingExceptions {
         validateIndex(idx, "unmark");
         Task task = tasks.get(idx - 1);
@@ -34,27 +66,61 @@ public class TaskList {
         return task;
     }
 
+    /**
+     * Removes and returns the task at the given 1-based index.
+     *
+     * @param idx the 1-based index of the task to delete.
+     * @return the task that was removed.
+     * @throws FlorkingExceptions if idx is out of range.
+     */
     public Task delete(int idx) throws FlorkingExceptions {
         validateIndex(idx, "delete");
         return tasks.remove(idx - 1);
     }
 
+    /**
+     * Returns the number of tasks currently in the list.
+     *
+     * @return the task count.
+     */
     public int size() {
         return tasks.size();
     }
 
+    /**
+     * Returns whether the list currently has no tasks.
+     *
+     * @return true if empty, false otherwise.
+     */
     public boolean isEmpty() {
         return tasks.isEmpty();
     }
 
+    /**
+     * Returns the task at the given 0-based index.
+     *
+     * @param index the 0-based index.
+     * @return the task at that index.
+     */
     public Task get(int index) {
         return tasks.get(index);
     }
 
+    /**
+     * Returns the underlying list of all tasks, for display or persistence.
+     *
+     * @return the full list of tasks.
+     */
     public ArrayList<Task> getAll() {
         return tasks;
     }
 
+    /**
+     * Returns all tasks that occur on the given date.
+     *
+     * @param queryDate the date to filter by.
+     * @return a new list containing only the matching tasks.
+     */
     public ArrayList<Task> getTasksOn(LocalDate queryDate) {
         ArrayList<Task> matches = new ArrayList<>();
         for (Task task : tasks) {
@@ -65,6 +131,15 @@ public class TaskList {
         return matches;
     }
 
+    /**
+     * Parses a task-index argument (e.g. the "3" in "mark 3") and validates
+     * it is within range for this list.
+     *
+     * @param argument the raw argument string.
+     * @param actionName the action being performed, used to phrase error messages.
+     * @return the parsed, validated 1-based index.
+     * @throws FlorkingExceptions if the argument is missing, non-numeric, or out of range.
+     */
     public int parseIndex(String argument, String actionName) throws FlorkingExceptions {
         if (argument == null || argument.trim().isEmpty()) {
             throw new FlorkingExceptions("Say properly which task you want " + actionName + ".");
