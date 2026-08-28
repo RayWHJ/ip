@@ -133,6 +133,16 @@ public class TaskList {
         return matches;
     }
 
+    public ArrayList<Task> findTasks(String keyword) {
+        ArrayList<Task> matches = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matches.add(task);
+            }
+        }
+        return matches;
+    }
+
     /**
      * Parses a task-index argument (e.g. the "3" in "mark 3") and validates
      * it is within range for this list.

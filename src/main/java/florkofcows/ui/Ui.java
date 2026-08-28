@@ -108,4 +108,17 @@ public class Ui {
         }
         showLine();
     }
+
+    public void showMatchingTasks(ArrayList<Task> matches) {
+        showLine();
+        if (matches.isEmpty()) {
+            System.out.println(" Don't have this task eh!");
+        } else {
+            System.out.println(" Nah here:");
+            for (int i = 0; i < matches.size(); i++) {
+                System.out.println(" " + (i + 1) + "." + matches.get(i).toString());
+            }
+        }
+        showLine();
+    }
 }

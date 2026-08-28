@@ -51,6 +51,8 @@ public class Parser {
             return new Command.MarkCommand(parseIndexArg(words, "unmark"), false);
         case DELETE:
             return new Command.DeleteCommand(parseIndexArg(words, "delete"));
+        case FIND:
+            return new Command.FindCommand(parseFindKeyword(trimmed));
         default:
             throw new FlorkingExceptions("What you saying? I don't get sia.");
         }
@@ -129,5 +131,13 @@ public class Parser {
         }
         String to = toParts[1].trim();
         return new String[] {eventDescription, from, to};
+    }
+
+    public static String parseFindKeyword(String line) throws FlorkingExceptions {
+        String keyword = line.length() > 4 ? line.substring(4).trim() : "";
+        if (keyword.isEmpty()) {
+            throw new FlorkingExceptions("What you want me find? Give me a keyword sia.");
+        }
+        return keyword;
     }
 }
