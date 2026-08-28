@@ -13,6 +13,10 @@ import florkofcows.task.Event;
 import florkofcows.task.Task;
 import florkofcows.task.Todo;
 
+/**
+ * Handles saving tasks to disk and loading them back on startup.
+ * Tasks are persisted as one pipe-delimited line per task under ./data/.
+ */
 public class Storage {
     private final Path filePath;
 
@@ -28,6 +32,13 @@ public class Storage {
         this.filePath = filePath;
     }
 
+    /**
+     * Saves the given tasks to disk, overwriting any previous contents.
+     * Creates the data folder if it does not already exist.
+     *
+     * @param tasks the tasks to save.
+     * @throws IOException if the file or folder cannot be written to.
+     */
     public void save(ArrayList<Task> tasks) throws IOException {
         Path parent = filePath.getParent();
         if (parent != null) {
@@ -41,6 +52,16 @@ public class Storage {
         }
     }
 
+    /**
+     * Loads tasks from disk. If the data file or folder does not exist yet
+     * (e.g. on a first run), returns an empty list instead of failing.
+     * Individual corrupted lines are skipped with a warning rather than
+     * aborting the entire load.
+     *
+     * @return the list of tasks loaded from disk, or an empty list if none exist yet.
+     * @throws IOException if the file exists but cannot be read for a reason
+     *                      other than it being missing.
+     */
     public ArrayList<Task> load() throws IOException {
         List<String> lines;
         try {

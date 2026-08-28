@@ -15,12 +15,26 @@ public class FlorkDateTime {
     private final LocalDate date;
     private final String text;
 
+    /**
+     * Represents a date/time value that may be a recognized {@link LocalDateTime},
+     * a recognized {@link LocalDate}, or free-form text, depending on what the
+     * user typed. Falls back to storing the raw text so unrecognized input
+     * (e.g. "no idea :-p") is preserved rather than rejected.
+     */
     private FlorkDateTime(LocalDateTime dateTime, LocalDate date, String text) {
         this.dateTime = dateTime;
         this.date = date;
         this.text = text;
     }
 
+    /**
+     * Parses the given input into a FlorkDateTime, trying a full date/time
+     * format first, then a date-only format, and finally falling back to
+     * storing the input as plain text if neither matches.
+     *
+     * @param input the raw text to parse.
+     * @return a FlorkDateTime representing the parsed value or the original text.
+     */
     public static FlorkDateTime parse(String input) {
         try {
             LocalDateTime dateTime = LocalDateTime.parse(input, INPUT_DATETIME);
@@ -37,6 +51,12 @@ public class FlorkDateTime {
         return new FlorkDateTime(null, null, input);
     }
 
+    /**
+     * Returns a display-friendly string for this value: a formatted date/time
+     * or date if one was recognized, or the original text otherwise.
+     *
+     * @return the display string.
+     */
     public String toDisplayString() {
         if (dateTime != null) {
             return dateTime.format(DISPLAY_DATETIME);
@@ -47,6 +67,13 @@ public class FlorkDateTime {
         }
     }
 
+    /**
+     * Returns a representation of this value suitable for saving to disk,
+     * re-emitted in the same format it was originally parsed from so it can
+     * be parsed identically again on load.
+     *
+     * @return the save-format string.
+     */
     public String toSaveFormat() {
         if (dateTime != null) {
             return dateTime.format(INPUT_DATETIME);
@@ -57,6 +84,12 @@ public class FlorkDateTime {
         }
     }
 
+    /**
+     * Returns the underlying date if this value was recognized as a date or
+     * datetime, or null if it is free-form text with no associated date.
+     *
+     * @return the underlying LocalDate, or null.
+     */
     public LocalDate getDateOrNull() {
         if (dateTime != null) {
             return dateTime.toLocalDate();

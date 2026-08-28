@@ -2,24 +2,56 @@ package florkofcows.task;
 
 import java.time.LocalDate;
 
+/**
+ * Represents a task that occurs over a period of time, with a start and end.
+ * Each of the start and end may independently be a recognized date/datetime
+ * or free-form text, depending on what was parsed by {@link FlorkDateTime}.
+ */
 public class Event extends Task {
     protected FlorkDateTime from;
     protected FlorkDateTime to;
 
+    /**
+     * Creates an event task with the given description and time range.
+     *
+     * @param description the text describing the event.
+     * @param from the start date/time, in a format recognized by {@link FlorkDateTime},
+     *             or free-form text if not recognized.
+     * @param to the end date/time, in a format recognized by {@link FlorkDateTime},
+     *           or free-form text if not recognized.
+     */
     public Event(String description, String from, String to) {
         super(description);
         this.from = FlorkDateTime.parse(from);
         this.to = FlorkDateTime.parse(to);
     }
 
+    /**
+     * Returns the event's start date/time as a display-friendly string.
+     *
+     * @return the formatted "from" value.
+     */
     public String getFrom() {
         return from.toDisplayString();
     }
 
+    /**
+     * Returns the event's end date/time as a display-friendly string.
+     *
+     * @return the formatted "to" value.
+     */
     public String getTo() {
         return to.toDisplayString();
     }
 
+    /**
+     * Returns whether this event occurs on the given date. If both the start
+     * and end are recognized dates, the check is an inclusive range match;
+     * if only one side is a recognized date, only that side is compared.
+     *
+     * @param queryDate the date to check against.
+     * @return true if the event occurs on queryDate, false otherwise.
+     */
     @Override
     public boolean isOccurringOn(LocalDate queryDate) {
         LocalDate fromDate = from.getDateOrNull();
