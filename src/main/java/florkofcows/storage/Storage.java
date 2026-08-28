@@ -13,6 +13,9 @@ import florkofcows.task.Event;
 import florkofcows.task.Task;
 import florkofcows.task.Todo;
 
+/**
+ * Responsible for persisting tasks to and loading tasks from a text file.
+ */
 public class Storage {
     private final Path filePath;
 

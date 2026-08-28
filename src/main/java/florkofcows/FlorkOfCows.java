@@ -8,6 +8,11 @@ import florkofcows.task.TaskList;
 import florkofcows.ui.Ui;
 import java.io.IOException;
 
+/**
+ * Main application entry point for FlorkOfCows.
+ *
+ * Sets up UI, storage and the task list, then enters the main command loop.
+ */
 public class FlorkOfCows {
     private final Ui ui;
     private final Storage storage;

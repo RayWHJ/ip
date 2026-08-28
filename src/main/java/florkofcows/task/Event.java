@@ -2,6 +2,9 @@ package florkofcows.task;
 
 import java.time.LocalDate;
 
+/**
+ * Event task with a start (from) and end (to) date/time or free-text timeframe.
+ */
 public class Event extends Task {
     protected FlorkDateTime from;
     protected FlorkDateTime to;

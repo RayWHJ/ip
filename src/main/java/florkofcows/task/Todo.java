@@ -1,5 +1,8 @@
 package florkofcows.task;
 
+/**
+ * Simple todo task without associated date/time information.
+ */
 public class Todo extends Task  {
 
     public Todo(String description) {

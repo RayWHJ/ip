@@ -5,6 +5,12 @@ import java.util.ArrayList;
 
 import florkofcows.exception.FlorkingExceptions;
 
+/**
+ * Mutable list wrapper for Task objects with basic operations.
+ *
+ * Provides add/mark/unmark/delete operations and simple index parsing/validation
+ * used by command implementations.
+ */
 public class TaskList {
     private final ArrayList<Task> tasks;
 

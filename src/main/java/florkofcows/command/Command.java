@@ -12,6 +12,10 @@ import florkofcows.task.TaskList;
 import florkofcows.task.Todo;
 import florkofcows.ui.Ui;
 
+/**
+ * Base command type. Concrete command implementations perform actions on the
+ * task list and may persist changes via Storage.
+ */
 public abstract class Command {
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws FlorkingExceptions;
 

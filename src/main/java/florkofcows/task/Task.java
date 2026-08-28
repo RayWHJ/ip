@@ -2,6 +2,11 @@ package florkofcows.task;
 
 import java.time.LocalDate;
 
+/**
+ * Base task type storing a description and completion status.
+ *
+ * Subclasses may add date/time information and override date-related behavior.
+ */
 public class Task {
     protected String description;
     protected boolean isDone;

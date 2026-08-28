@@ -7,6 +7,12 @@ import florkofcows.command.Command;
 import florkofcows.command.CommandType;
 import florkofcows.exception.FlorkingExceptions;
 
+/**
+ * Parser for incoming command lines.
+ *
+ * Converts raw input strings into Command instances. This class performs
+ * validation and throws FlorkingExceptions for invalid user input.
+ */
 public class Parser {
     public static Command parse(String fullCommand) throws FlorkingExceptions {
         if (fullCommand == null || fullCommand.trim().isEmpty()) {
