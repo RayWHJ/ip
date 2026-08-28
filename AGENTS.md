@@ -33,3 +33,7 @@ Ensure that Java 25 is used when running the application or build tasks. On macO
 Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
+
+## Test coverage
+
+Set a minimum test coverage target of 50% for the repository. After every code change, update or add JUnit tests as needed so the codebase meets or exceeds this coverage target; JUnit tests must be kept in sync with code changes to comply with this requirement. Continuous integration may enforce the 50% threshold.
