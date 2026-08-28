@@ -57,7 +57,7 @@ public class FlorkDateTime {
         }
     }
 
-    public LocalDate getDateorNull() {
+    public LocalDate getDateOrNull() {
         if (dateTime != null) {
             return dateTime.toLocalDate();
         } else if (date != null) {
