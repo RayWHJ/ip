@@ -65,6 +65,16 @@ public class TaskList {
         return matches;
     }
 
+    public ArrayList<Task> findTasks(String keyword) {
+        ArrayList<Task> matches = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matches.add(task);
+            }
+        }
+        return matches;
+    }
+
     public int parseIndex(String argument, String actionName) throws FlorkingExceptions {
         if (argument == null || argument.trim().isEmpty()) {
             throw new FlorkingExceptions("Say properly which task you want " + actionName + ".");
