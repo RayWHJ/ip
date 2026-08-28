@@ -37,3 +37,25 @@ Do not commit or push unless explicitly asked.
 ## Test coverage
 
 Set a minimum test coverage target of 50% for the repository. After every code change, update or add JUnit tests as needed so the codebase meets or exceeds this coverage target; JUnit tests must be kept in sync with code changes to comply with this requirement. Continuous integration may enforce the 50% threshold.
+
+## Coding standard
+
+All Java code in this repository MUST follow the SE-EDU intermediate Java coding conventions. The project ships a local skill to document and (in future) validate this requirement: .copilot/skills/seedu-java-coding-standard/SKILL.md
+
+Key mandates:
+- Public classes and nontrivial public methods must include Javadoc comments.
+- Follow naming conventions, ordering, spacing, and other rules from the reference: https://se-education.org/guides/conventions/java/intermediate.html
+- Agents and contributors should reference the skill when reviewing or generating code for this repository.
+
+## Git conventions (MANDATORY for all future commits)
+
+All commits intended for this repository MUST follow the SE-EDU Git conventions: .copilot/skills/seedu-git-standard/SKILL.md
+
+Key mandates:
+- Commit subject should be imperative, concise (<=50 chars) and summarise what changed.
+- Use an optional body to explain why the change was made and any important context; wrap at 72 characters per line.
+- Include trailers for metadata (e.g., Co-authored-by) only when required by policy.
+- Prefer lightweight tags for releases; do not push to shared remotes without explicit permission.
+
+Agents acting on behalf of contributors must format commit messages according to these rules and should not push changes without an explicit user instruction.
+
