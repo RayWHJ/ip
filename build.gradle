@@ -52,7 +52,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'duke.jar'
+    archiveFileName = 'florkofcows.jar'
 }
 
 run {
