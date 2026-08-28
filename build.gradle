@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'checkstyle'
     id 'com.gradleup.shadow' version '9.5.1'
 }
 
@@ -11,6 +12,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 dependencies {
@@ -20,6 +22,8 @@ dependencies {
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.4'
+
+    implementation 'com.joestelmach:natty:0.13'
 }
 
 test {
@@ -37,7 +41,7 @@ test {
 }
 
 application {
-    mainClass = 'seedu.duke.Duke'
+    mainClass = 'florkofcows.FlorkOfCows'
 }
 
 jar {
@@ -53,4 +57,8 @@ shadowJar {
 
 run {
     standardInput = System.in
+}
+
+checkstyle {
+    toolVersion = '11.0.0'
 }
