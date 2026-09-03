@@ -7,9 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 
+import org.junit.jupiter.api.Test;
+
 import florkofcows.command.Command;
 import florkofcows.exception.FlorkingExceptions;
-import org.junit.jupiter.api.Test;
 
 public class ParserTest {
     @Test
