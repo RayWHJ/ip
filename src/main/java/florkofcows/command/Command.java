@@ -31,6 +31,9 @@ public abstract class Command {
         }
     }
 
+    /**
+     * Command to exit the application.
+     */
     public static class ExitCommand extends Command {
         @Override
         public void execute(TaskList tasks, Ui ui, Storage storage) {
@@ -43,6 +46,9 @@ public abstract class Command {
         }
     }
 
+    /**
+     * Command to list all tasks in the task list.
+     */
     public static class ListCommand extends Command {
         @Override
         public void execute(TaskList tasks, Ui ui, Storage storage) {
@@ -50,6 +56,9 @@ public abstract class Command {
         }
     }
 
+    /**
+     * Command to list all tasks occurring on a specific date.
+     */
     public static class OnDateCommand extends Command {
         private final LocalDate queryDate;
 
@@ -63,6 +72,9 @@ public abstract class Command {
         }
     }
 
+    /**
+     * Command to add a new Todo task.
+     */
     public static class AddTodoCommand extends Command {
         private final String description;
 
@@ -79,10 +91,19 @@ public abstract class Command {
         }
     }
 
+    /**
+     * Command to add a new Deadline task.
+     */
     public static class AddDeadlineCommand extends Command {
         private final String description;
         private final String by;
 
+        /**
+         * Constructs a new AddDeadlineCommand with the given description and deadline.
+         *
+         * @param description the task description
+         * @param by          the deadline for the task
+         */
         public AddDeadlineCommand(String description, String by) {
             this.description = description;
             this.by = by;
@@ -97,11 +118,21 @@ public abstract class Command {
         }
     }
 
+    /**
+     * Command to add a new Event task.
+     */
     public static class AddEventCommand extends Command {
         private final String description;
         private final String from;
         private final String to;
 
+        /**
+         * Constructs a new AddEventCommand with the given description, start time, and end time.
+         *
+         * @param description the task description
+         * @param from        the start time of the event
+         * @param to          the end time of the event
+         */
         public AddEventCommand(String description, String from, String to) {
             this.description = description;
             this.from = from;
@@ -117,10 +148,19 @@ public abstract class Command {
         }
     }
 
+    /**
+     * Command to mark or unmark a task as done.
+     */
     public static class MarkCommand extends Command {
         private final int index;
         private final boolean markAsDone;
 
+        /**
+         * Constructs a new MarkCommand with the given index and mark/unmark flag.
+         *
+         * @param index      the 1-based index of the task to mark/unmark
+         * @param markAsDone true to mark the task as done, false to unmark it
+         */
         public MarkCommand(int index, boolean markAsDone) {
             this.index = index;
             this.markAsDone = markAsDone;
@@ -138,6 +178,9 @@ public abstract class Command {
         }
     }
 
+    /**
+     * Command to delete a task from the task list.
+     */
     public static class DeleteCommand extends Command {
         private final int index;
 
@@ -153,6 +196,9 @@ public abstract class Command {
         }
     }
 
+    /**
+     * Command to find tasks containing a specific keyword.
+     */
     public static class FindCommand extends Command {
         private final String keyword;
 

@@ -3,7 +3,7 @@ package florkofcows.task;
 /**
  * Represents a task with no associated date or time.
  */
-public class Todo extends Task  {
+public class Todo extends Task {
 
     /**
      * Creates a todo with the given description.

@@ -21,6 +21,11 @@ public class Ui {
         System.out.println("____________________________________________________________");
     }
 
+    /**
+     * Displays the welcome message and banner to the user.
+     *
+     * @param banner the ASCII art banner to display.
+     */
     public void showWelcome(String banner) {
         showLine();
         System.out.println(banner);
@@ -37,22 +42,41 @@ public class Ui {
         return scanner.nextLine().trim();
     }
 
+    /**
+     * Displays the exit message to the user.
+     */
     public void showBye() {
         showLine();
         System.out.println("See ya!");
         showLine();
     }
 
+    /**
+     * Displays an error message to the user.
+     *
+     * @param message the error message to display.
+     */
     public void showError(String message) {
         showLine();
         System.out.println(" Eh lock in!!! " + message);
         showLine();
     }
 
+    /**
+     * Displays a loading error message to the user, indicating that saved tasks
+     * could not be loaded and that a fresh start will be used instead.
+     *
+     * @param message the error message to display.
+     */
     public void showLoadingError(String message) {
         System.out.println(" Warning: couldn't load saved tasks (" + message + "). Starting fresh.");
     }
 
+    /**
+     * Displays the list of tasks to the user.
+     *
+     * @param tasks the list of tasks to display.
+     */
     public void showTaskList(TaskList tasks) {
         showLine();
         if (tasks.isEmpty()) {
@@ -66,6 +90,13 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays a message indicating that a task has been added, along with the
+     * task details and the updated total count of tasks.
+     *
+     * @param newTask    the task that was added.
+     * @param totalCount the updated total count of tasks.
+     */
     public void showTaskAdded(Task newTask, int totalCount) {
         showLine();
         System.out.println(" Okayyy added!");
@@ -74,6 +105,13 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays a message indicating that a task has been deleted, along with the
+     * task details and the updated remaining count of tasks.
+     *
+     * @param removedTask    the task that was deleted.
+     * @param remainingCount the updated remaining count of tasks.
+     */
     public void showTaskDeleted(Task removedTask, int remainingCount) {
         showLine();
         System.out.println(" Cans. Deleted!");
@@ -82,6 +120,12 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays a message indicating that a task has been marked as done, along
+     * with the task details.
+     *
+     * @param text the string representation of the task that was marked.
+     */
     public void showTaskMarked(String text) {
         showLine();
         System.out.println(" Marked it!");
@@ -89,6 +133,12 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays a message indicating that a task has been unmarked (marked as not
+     * done), along with the task details.
+     *
+     * @param text the string representation of the task that was unmarked.
+     */
     public void showTaskUnmarked(String text) {
         showLine();
         System.out.println(" Unmarked it!");
@@ -96,6 +146,12 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays the list of tasks that match a specific date to the user.
+     *
+     * @param matches   the list of tasks that match the specified date.
+     * @param queryDate the date for which matching tasks are displayed.
+     */
     public void showTasksOnDate(ArrayList<Task> matches, LocalDate queryDate) {
         showLine();
         if (matches.isEmpty()) {
@@ -109,6 +165,11 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays the list of tasks that match a specific keyword to the user.
+     *
+     * @param matches the list of tasks that match the specified keyword.
+     */
     public void showMatchingTasks(ArrayList<Task> matches) {
         showLine();
         if (matches.isEmpty()) {

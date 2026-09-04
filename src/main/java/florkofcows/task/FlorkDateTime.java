@@ -45,13 +45,13 @@ public class FlorkDateTime {
             LocalDateTime dateTime = LocalDateTime.parse(input, INPUT_DATETIME);
             return new FlorkDateTime(dateTime, null, null);
         } catch (DateTimeParseException e) {
-
+            // Not a datetime — fall through and try parsing as a date instead.
         }
 
         try {
             return new FlorkDateTime(null, LocalDate.parse(input, INPUT_DATE), null);
         } catch (DateTimeParseException e) {
-
+            // Not a date either — fall through and treat input as plain text.
         }
         return new FlorkDateTime(null, null, input);
     }
