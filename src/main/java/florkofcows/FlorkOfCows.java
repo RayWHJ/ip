@@ -1,12 +1,13 @@
 package florkofcows;
 
+import java.io.IOException;
+
 import florkofcows.command.Command;
 import florkofcows.exception.FlorkingExceptions;
 import florkofcows.parser.Parser;
 import florkofcows.storage.Storage;
 import florkofcows.task.TaskList;
 import florkofcows.ui.Ui;
-import java.io.IOException;
 
 /**
  * Main application entry point for FlorkOfCows.
@@ -19,9 +20,18 @@ public class FlorkOfCows {
     private final Storage storage;
     private TaskList tasks;
 
+    /**
+     * Creates a new FlorkOfCows instance with a fresh UI and storage.
+     */
     public FlorkOfCows() {
         this.ui = new Ui();
         this.storage = new Storage();
+        try {
+            tasks = new TaskList(storage.load());
+        } catch (IOException e) {
+            tasks = new TaskList();
+            ui.showLoadingError(e.getMessage());
+        }
     }
 
     /**
@@ -34,6 +44,12 @@ public class FlorkOfCows {
         new FlorkOfCows().run();
     }
 
+    /**
+     * Runs the main command loop of the chatbot.
+     *
+     * Loads saved tasks from disk, then repeatedly reads user input,
+     * parses it into commands, and executes them until an exit command is given.
+     */
     public void run() {
         String banner = "  ______ _            _     ____   __  _____                  \n"
                 + " |  ____| |          | |   / __ \\ / _|/ ____|                 \n"
@@ -43,13 +59,6 @@ public class FlorkOfCows {
                 + " |_|    |_|\\___/|_|  |_|\\_\\____/|_|  \\_____\\___/ \\_/\\_/ |___/\n";
 
         ui.showWelcome(banner);
-
-        try {
-            tasks = new TaskList(storage.load());
-        } catch (IOException e) {
-            tasks = new TaskList();
-            ui.showLoadingError(e.getMessage());
-        }
 
         boolean isExit = false;
         while (!isExit && ui.hasNextCommand()) {
@@ -65,5 +74,23 @@ public class FlorkOfCows {
                 ui.showError(e.getMessage());
             }
         }
+    }
+
+    public String getResponse(String input) {
+        // Redirect System.out so ui.showX() calls write here instead of the console
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(outContent));
+
+        try {
+            Command command = Parser.parse(input);
+            command.execute(tasks, ui, storage);
+        } catch (FlorkingExceptions e) {
+            ui.showError(e.getMessage());
+        } finally {
+            System.setOut(originalOut); // always restore, even if something throws
+        }
+
+        return outContent.toString();
     }
 }

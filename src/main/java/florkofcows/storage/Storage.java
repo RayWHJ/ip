@@ -14,12 +14,8 @@ import florkofcows.task.Task;
 import florkofcows.task.Todo;
 
 /**
-<<<<<<< HEAD
  * Handles saving tasks to disk and loading them back on startup.
  * Tasks are persisted as one pipe-delimited line per task under ./data/.
-=======
- * Responsible for persisting tasks to and loading tasks from a text file.
->>>>>>> branch-A-CodingStandard
  */
 public class Storage {
     private final Path filePath;

@@ -133,6 +133,12 @@ public class TaskList {
         return matches;
     }
 
+    /**
+     * Returns all tasks whose descriptions contain the given keyword.
+     *
+     * @param keyword the substring to search for in task descriptions.
+     * @return a new list containing only the matching tasks.
+     */
     public ArrayList<Task> findTasks(String keyword) {
         ArrayList<Task> matches = new ArrayList<>();
         for (Task task : tasks) {
