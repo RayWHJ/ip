@@ -94,9 +94,13 @@ public class Storage {
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
         String description = parts[2];
+        String tagsField = "";
         Task task;
         switch (type) {
             case "T":
+                if (parts.length >= 4) {
+                    tagsField = parts[3];
+                }
                 task = new Todo(description);
                 break;
             case "D":
@@ -104,6 +108,9 @@ public class Storage {
                     throw new IllegalArgumentException("Deadline missing '/by' field: " + line);
                 }
                 String by = parts[3];
+                if (parts.length >= 5) {
+                    tagsField = parts[4];
+                }
                 task = new Deadline(description, by);
                 break;
             case "E":
@@ -112,6 +119,9 @@ public class Storage {
                 }
                 String from = parts[3];
                 String to = parts[4];
+                if (parts.length >= 6) {
+                    tagsField = parts[5];
+                }
                 task = new Event(description, from, to);
                 break;
             default:
@@ -121,7 +131,7 @@ public class Storage {
         if (isDone) {
             task.markAsDone();
         }
-
+        task.setTagsFromSaveFormat(tagsField);
         return task;
     }
 }

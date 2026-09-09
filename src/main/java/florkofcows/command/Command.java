@@ -211,4 +211,30 @@ public abstract class Command {
             ui.showMatchingTasks(tasks.findTasks(keyword));
         }
     }
+
+    /**
+     * Command to add one or more tags to a task.
+     */
+    public static class TagCommand extends Command {
+        private final int index;
+        private final String[] tags;
+
+        /**
+         * Constructs a new TagCommand with the given index and tags.
+         *
+         * @param index the 1-based index of the task to tag
+         * @param tags  the tags to add to the task
+         */
+        public TagCommand(int index, String[] tags) {
+            this.index = index;
+            this.tags = tags;
+        }
+
+        @Override
+        public void execute(TaskList tasks, Ui ui, Storage storage) throws FlorkingExceptions {
+            Task task = tasks.tag(index, tags);
+            save(tasks, storage);
+            ui.showTaskTagged(task.toString());
+        }
+    }
 }

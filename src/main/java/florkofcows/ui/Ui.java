@@ -147,6 +147,18 @@ public class Ui {
     }
 
     /**
+     * Displays a message indicating that tags were added to a task.
+     *
+     * @param text the string representation of the tagged task.
+     */
+    public void showTaskTagged(String text) {
+        showLine();
+        System.out.println(" Tag added!");
+        System.out.println("   " + text);
+        showLine();
+    }
+
+    /**
      * Displays the list of tasks that match a specific date to the user.
      *
      * @param matches   the list of tasks that match the specified date.

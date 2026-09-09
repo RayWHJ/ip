@@ -28,30 +28,32 @@ public class Parser {
         CommandType commandType = parseCommandType(commandWord);
 
         switch (commandType) {
-        case BYE:
-            return new Command.ExitCommand();
-        case LIST:
-            return new Command.ListCommand();
-        case ON:
-            return new Command.OnDateCommand(parseDateArg(extractRemainingText(trimmed, commandWord)));
-        case TODO:
-            return new Command.AddTodoCommand(parseTodoDescription(trimmed));
-        case DEADLINE:
-            String[] deadlineParts = parseDeadlineParts(trimmed);
-            return new Command.AddDeadlineCommand(deadlineParts[0], deadlineParts[1]);
-        case EVENT:
-            String[] eventParts = parseEventParts(trimmed);
-            return new Command.AddEventCommand(eventParts[0], eventParts[1], eventParts[2]);
-        case MARK:
-            return new Command.MarkCommand(parseIndexArg(words, "mark"), true);
-        case UNMARK:
-            return new Command.MarkCommand(parseIndexArg(words, "unmark"), false);
-        case DELETE:
-            return new Command.DeleteCommand(parseIndexArg(words, "delete"));
-        case FIND:
-            return new Command.FindCommand(parseFindKeyword(trimmed));
-        default:
-            throw new FlorkingExceptions("What you saying? I don't get sia.");
+            case BYE:
+                return new Command.ExitCommand();
+            case LIST:
+                return new Command.ListCommand();
+            case ON:
+                return new Command.OnDateCommand(parseDateArg(extractRemainingText(trimmed, commandWord)));
+            case TODO:
+                return new Command.AddTodoCommand(parseTodoDescription(trimmed));
+            case DEADLINE:
+                String[] deadlineParts = parseDeadlineParts(trimmed);
+                return new Command.AddDeadlineCommand(deadlineParts[0], deadlineParts[1]);
+            case EVENT:
+                String[] eventParts = parseEventParts(trimmed);
+                return new Command.AddEventCommand(eventParts[0], eventParts[1], eventParts[2]);
+            case MARK:
+                return new Command.MarkCommand(parseIndexArg(words, "mark"), true);
+            case UNMARK:
+                return new Command.MarkCommand(parseIndexArg(words, "unmark"), false);
+            case DELETE:
+                return new Command.DeleteCommand(parseIndexArg(words, "delete"));
+            case FIND:
+                return new Command.FindCommand(parseFindKeyword(trimmed));
+            case TAG:
+                return new Command.TagCommand(parseTagIndex(trimmed), parseTagValues(trimmed));
+            default:
+                throw new FlorkingExceptions("What you saying? I don't get sia.");
         }
     }
 
@@ -193,6 +195,53 @@ public class Parser {
             throw new FlorkingExceptions("What you want me find? Give me a keyword sia.");
         }
         return keyword;
+    }
+
+    /**
+     * Parses the task index and tag list for a tag command.
+     *
+     * @param line the full command line starting with "tag".
+     * @return the parsed task index.
+     * @throws FlorkingExceptions if the arguments are missing or invalid.
+     */
+    public static int parseTagIndex(String line) throws FlorkingExceptions {
+        String remainder = extractCommandArgument(line, "tag").trim();
+        if (remainder.isEmpty()) {
+            throw new FlorkingExceptions("Say properly which task you want tag eh.");
+        }
+        String[] tokens = remainder.split("\\s+");
+        try {
+            return Integer.parseInt(tokens[0]);
+        } catch (NumberFormatException e) {
+            throw new FlorkingExceptions("Oi, '" + tokens[0] + "' isn't a valid task number eh.");
+        }
+    }
+
+    /**
+     * Parses the tag tokens for a tag command.
+     *
+     * @param line the full command line starting with "tag".
+     * @return the tag values to attach.
+     * @throws FlorkingExceptions if no valid tags are provided.
+     */
+    public static String[] parseTagValues(String line) throws FlorkingExceptions {
+        String remainder = extractCommandArgument(line, "tag").trim();
+        if (remainder.isEmpty()) {
+            throw new FlorkingExceptions("No tag to add? Try: tag 2 #fun");
+        }
+        String[] tokens = remainder.split("\\s+");
+        if (tokens.length < 2) {
+            throw new FlorkingExceptions("No tag to add? Try: tag 2 #fun");
+        }
+        String[] tags = new String[tokens.length - 1];
+        for (int i = 1; i < tokens.length; i++) {
+            String tag = tokens[i].trim();
+            if (tag.isEmpty() || (!tag.startsWith("#") && tag.contains("#"))) {
+                throw new FlorkingExceptions("Tags should look like #fun. Try: tag 2 #fun");
+            }
+            tags[i - 1] = tag;
+        }
+        return tags;
     }
 
     private static String extractCommandArgument(String line, String commandWord) {

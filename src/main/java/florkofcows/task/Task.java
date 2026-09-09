@@ -1,6 +1,7 @@
 package florkofcows.task;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 /**
  * Represents a generic task with a description and a completion status.
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 public class Task {
     protected String description;
     protected boolean isDone;
+    protected final ArrayList<String> tags = new ArrayList<>();
 
     /**
      * Creates a task with the given description, initially marked as not done.
@@ -67,6 +69,51 @@ public class Task {
     }
 
     /**
+     * Adds a single tag to the task.
+     *
+     * @param tag the tag to add, such as "#fun" or "fun".
+     */
+    public void addTag(String tag) {
+        String normalizedTag = normalizeTag(tag);
+        if (!normalizedTag.isEmpty() && !tags.contains(normalizedTag)) {
+            tags.add(normalizedTag);
+        }
+    }
+
+    /**
+     * Adds multiple tags to the task.
+     *
+     * @param newTags the tags to add.
+     */
+    public void addTags(String... newTags) {
+        if (newTags == null) {
+            return;
+        }
+        for (String tag : newTags) {
+            addTag(tag);
+        }
+    }
+
+    /**
+     * Returns the task's tags.
+     *
+     * @return a copy of the task's tags.
+     */
+    public ArrayList<String> getTags() {
+        return new ArrayList<>(tags);
+    }
+
+    /**
+     * Checks whether the task has a given tag.
+     *
+     * @param tag the tag to search for.
+     * @return true if present, false otherwise.
+     */
+    public boolean hasTag(String tag) {
+        return tags.contains(normalizeTag(tag));
+    }
+
+    /**
      * Returns whether this task occurs on the given date.
      * The base implementation always returns false, since a plain task
      * has no associated date; subclasses with dates override this.
@@ -79,20 +126,55 @@ public class Task {
     }
 
     /**
+     * Reads a tag list from saved data and updates the task.
+     *
+     * @param rawTagString the tags serialized in the save file.
+     */
+    public void setTagsFromSaveFormat(String rawTagString) {
+        if (rawTagString == null || rawTagString.trim().isEmpty()) {
+            return;
+        }
+        String[] tagValues = rawTagString.trim().split("\\s+");
+        addTags(tagValues);
+    }
+
+    /**
      * Returns a string representation of this task suitable for saving to a file.
      *
-     * @return a string in the format "isDone | description".
+     * @return a string in the format "isDone | description" with optional tags appended.
      */
     public String toSaveFormat() {
         // The save format relies on a real description; otherwise it would serialize an invalid task.
         assert description != null : "Task description must be present before saving";
-        return (isDone ? "1" : "0") + " | " + description;
+        String formatted = (isDone ? "1" : "0") + " | " + description;
+        if (tags.isEmpty()) {
+            return formatted;
+        }
+        return formatted + " | " + String.join(" ", tags);
     }
 
     @Override
     public String toString() {
         assert description != null : "Task description must be present before display";
-        return "[" + (isDone ? "X" : " ") + "] " + description;
+        String formatted = "[" + (isDone ? "X" : " ") + "] " + description;
+        if (tags.isEmpty()) {
+            return formatted;
+        }
+        return formatted + " " + String.join(" ", tags);
+    }
+
+    private String normalizeTag(String tag) {
+        if (tag == null) {
+            return "";
+        }
+        String normalized = tag.trim();
+        if (normalized.isEmpty()) {
+            return "";
+        }
+        if (!normalized.startsWith("#")) {
+            normalized = "#" + normalized;
+        }
+        return normalized;
     }
 }
 
