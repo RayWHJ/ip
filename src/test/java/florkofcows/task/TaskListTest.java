@@ -113,4 +113,16 @@ public class TaskListTest {
         list.add(new Todo("walk dog"));
         assertTrue(list.findTasks("book").isEmpty());
     }
+
+    @Test
+    public void tag_validTags_addsTagsToTask() throws FlorkingExceptions {
+        TaskList list = new TaskList();
+        list.add(new Todo("read book"));
+
+        Task tagged = list.tag(1, "#fun", "study");
+
+        assertTrue(tagged.hasTag("#fun"));
+        assertTrue(tagged.hasTag("#study"));
+        assertEquals(2, tagged.getTags().size());
+    }
 }

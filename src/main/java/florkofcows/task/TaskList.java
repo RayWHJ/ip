@@ -84,6 +84,21 @@ public class TaskList {
     }
 
     /**
+     * Adds one or more tags to the task at the given 1-based index.
+     *
+     * @param idx the 1-based index of the task to tag.
+     * @param tags the tags to add.
+     * @return the tagged task.
+     * @throws FlorkingExceptions if idx is out of range.
+     */
+    public Task tag(int idx, String... tags) throws FlorkingExceptions {
+        validateIndex(idx, "tag");
+        Task task = tasks.get(idx - 1);
+        task.addTags(tags);
+        return task;
+    }
+
+    /**
      * Returns the number of tasks currently in the list.
      *
      * @return the task count.

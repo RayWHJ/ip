@@ -95,4 +95,12 @@ public class ParserTest {
     public void parse_emptyInput_exceptionThrown() {
         assertThrows(FlorkingExceptions.class, () -> Parser.parse(""));
     }
+
+    @Test
+    public void parse_tagCommand_validInputReturnsTagCommand() throws FlorkingExceptions {
+        Command command = Parser.parse("tag 1 #fun #study");
+        assertTrue(command instanceof Command.TagCommand);
+        assertEquals(1, Parser.parseTagIndex("tag 1 #fun #study"));
+        assertArrayEquals(new String[] {"#fun", "#study"}, Parser.parseTagValues("tag 1 #fun #study"));
+    }
 }
