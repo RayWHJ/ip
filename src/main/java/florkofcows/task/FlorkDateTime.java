@@ -27,6 +27,8 @@ public class FlorkDateTime {
      * (e.g. "no idea :-p") is preserved rather than rejected.
      */
     private FlorkDateTime(LocalDateTime dateTime, LocalDate date, String text) {
+        // Every FlorkDateTime must keep one valid representation: date-time, date, or plain text.
+        assert dateTime != null || date != null || text != null : "A FlorkDateTime must encode one concrete value";
         this.dateTime = dateTime;
         this.date = date;
         this.text = text;
@@ -41,6 +43,7 @@ public class FlorkDateTime {
      * @return a FlorkDateTime representing the parsed value or the original text.
      */
     public static FlorkDateTime parse(String input) {
+        assert input != null : "FlorkDateTime.parse() should not receive null input";
         try {
             LocalDateTime dateTime = LocalDateTime.parse(input, INPUT_DATETIME);
             return new FlorkDateTime(dateTime, null, null);
@@ -97,10 +100,13 @@ public class FlorkDateTime {
      */
     public LocalDate getDateOrNull() {
         if (dateTime != null) {
+            assert dateTime.toLocalDate() != null : "A recognized datetime must carry a valid date";
             return dateTime.toLocalDate();
         } else if (date != null) {
+            assert date != null : "A recognized date must not become null unexpectedly";
             return date;
         } else {
+            assert text != null : "Text-backed values should retain the original raw value";
             return null;
         }
     }

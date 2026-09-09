@@ -27,6 +27,8 @@ public class Parser {
         }
 
         String trimmed = fullCommand.trim();
+        // Once a non-empty command reaches this point, the command type should be a valid enum constant.
+        assert !trimmed.isEmpty() : "Command text must be non-blank before parsing";
         String[] words = trimmed.split(" ", 2);
         String commandWord = words[0].toUpperCase();
         CommandType commandType;
@@ -35,6 +37,7 @@ public class Parser {
         } catch (IllegalArgumentException e) {
             throw new FlorkingExceptions("What you saying? I don't get sia.");
         }
+        assert commandType != null : "Parser should only return a recognized command type";
 
         switch (commandType) {
             case BYE:
@@ -89,11 +92,14 @@ public class Parser {
         if (dateArg == null || dateArg.trim().isEmpty()) {
             throw new FlorkingExceptions("Which date? Try: on 2019-12-02");
         }
+        String normalizedDate = dateArg.trim();
+        // Parsing should only proceed for a non-blank date string; otherwise the method would reject invalid input.
+        assert !normalizedDate.isEmpty() : "Date string must not be blank after trimming";
         try {
-            return LocalDate.parse(dateArg.trim());
+            return LocalDate.parse(normalizedDate);
         } catch (DateTimeParseException e) {
             throw new FlorkingExceptions(
-                    "'" + dateArg.trim() + "' isn't a valid date. Use yyyy-MM-dd, e.g. 2019-12-02.");
+                    "'" + normalizedDate + "' isn't a valid date. Use yyyy-MM-dd, e.g. 2019-12-02.");
         }
     }
 

@@ -37,6 +37,8 @@ public class TaskList {
      * @param task the task to add.
      */
     public void add(Task task) {
+        // The list should only ever contain concrete, usable tasks; nulls would break iteration and persistence.
+        assert task != null : "TaskList must not contain null tasks";
         tasks.add(task);
     }
 
@@ -105,6 +107,8 @@ public class TaskList {
      * @return the task at that index.
      */
     public Task get(int index) {
+        // A valid zero-based index is required for all reads from the backing list.
+        assert index >= 0 && index < tasks.size() : "get() requires an in-range index";
         return tasks.get(index);
     }
 
@@ -169,6 +173,8 @@ public class TaskList {
             throw new FlorkingExceptions("Oi, '" + argument.trim() + "' isn't a valid task number eh.");
         }
         validateIndex(idx, actionName);
+        // Once validation succeeds, the index must be both positive and within the current task count.
+        assert idx >= 1 && idx <= tasks.size() : "Validated task indices must remain in range";
         return idx;
     }
 

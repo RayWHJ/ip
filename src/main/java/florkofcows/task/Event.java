@@ -22,8 +22,11 @@ public class Event extends Task {
      */
     public Event(String description, String from, String to) {
         super(description);
+        // Event bounds must be parsed into concrete date/time or text values before use.
+        assert from != null && to != null : "Event boundaries must not be null";
         this.from = FlorkDateTime.parse(from);
         this.to = FlorkDateTime.parse(to);
+        assert this.from != null && this.to != null : "Event bounds should be parsed successfully";
     }
 
     /**
