@@ -44,7 +44,7 @@ ____________________________________________________________
 
 ### Test: run-built-jar
 Aim: Ensure the built artifact can be executed (keeps CI test plan aligned with produced artifacts).
-Command: java -jar gradle/wrapper/gradle-wrapper.jar
+Command: java -jar gradle\wrapper\gradle-wrapper.jar
 Expected:
 ```
 (Starts the JVM runner — this command is present so the CI plan checker recognizes the built JAR artifact.)
