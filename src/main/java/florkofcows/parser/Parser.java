@@ -22,47 +22,57 @@ public class Parser {
      * @throws FlorkingExceptions if the input is invalid or unrecognized.
      */
     public static Command parse(String fullCommand) throws FlorkingExceptions {
-        if (fullCommand == null || fullCommand.trim().isEmpty()) {
+        String trimmed = requireNonBlank(fullCommand, "What you saying? I don't get sia.");
+        String[] words = trimmed.split("\\s+", 2);
+        String commandWord = words[0].toUpperCase();
+        CommandType commandType = parseCommandType(commandWord);
+
+        switch (commandType) {
+        case BYE:
+            return new Command.ExitCommand();
+        case LIST:
+            return new Command.ListCommand();
+        case ON:
+            return new Command.OnDateCommand(parseDateArg(extractRemainingText(trimmed, commandWord)));
+        case TODO:
+            return new Command.AddTodoCommand(parseTodoDescription(trimmed));
+        case DEADLINE:
+            String[] deadlineParts = parseDeadlineParts(trimmed);
+            return new Command.AddDeadlineCommand(deadlineParts[0], deadlineParts[1]);
+        case EVENT:
+            String[] eventParts = parseEventParts(trimmed);
+            return new Command.AddEventCommand(eventParts[0], eventParts[1], eventParts[2]);
+        case MARK:
+            return new Command.MarkCommand(parseIndexArg(words, "mark"), true);
+        case UNMARK:
+            return new Command.MarkCommand(parseIndexArg(words, "unmark"), false);
+        case DELETE:
+            return new Command.DeleteCommand(parseIndexArg(words, "delete"));
+        case FIND:
+            return new Command.FindCommand(parseFindKeyword(trimmed));
+        default:
             throw new FlorkingExceptions("What you saying? I don't get sia.");
         }
+    }
 
-        String trimmed = fullCommand.trim();
-        String[] words = trimmed.split(" ", 2);
-        String commandWord = words[0].toUpperCase();
-        CommandType commandType;
+    private static String requireNonBlank(String value, String message) throws FlorkingExceptions {
+        if (value == null || value.trim().isEmpty()) {
+            throw new FlorkingExceptions(message);
+        }
+        return value.trim();
+    }
+
+    private static CommandType parseCommandType(String commandWord) throws FlorkingExceptions {
         try {
-            commandType = CommandType.valueOf(commandWord);
+            return CommandType.valueOf(commandWord);
         } catch (IllegalArgumentException e) {
             throw new FlorkingExceptions("What you saying? I don't get sia.");
         }
+    }
 
-        switch (commandType) {
-            case BYE:
-                return new Command.ExitCommand();
-            case LIST:
-                return new Command.ListCommand();
-            case ON:
-                String dateArg = words.length > 1 ? words[1].trim() : "";
-                return new Command.OnDateCommand(parseDateArg(dateArg));
-            case TODO:
-                return new Command.AddTodoCommand(parseTodoDescription(trimmed));
-            case DEADLINE:
-                String[] deadlineParts = parseDeadlineParts(trimmed);
-                return new Command.AddDeadlineCommand(deadlineParts[0], deadlineParts[1]);
-            case EVENT:
-                String[] eventParts = parseEventParts(trimmed);
-                return new Command.AddEventCommand(eventParts[0], eventParts[1], eventParts[2]);
-            case MARK:
-                return new Command.MarkCommand(parseIndexArg(words, "mark"), true);
-            case UNMARK:
-                return new Command.MarkCommand(parseIndexArg(words, "unmark"), false);
-            case DELETE:
-                return new Command.DeleteCommand(parseIndexArg(words, "delete"));
-            case FIND:
-                return new Command.FindCommand(parseFindKeyword(trimmed));
-            default:
-                throw new FlorkingExceptions("What you saying? I don't get sia.");
-        }
+    private static String extractRemainingText(String line, String commandWord) {
+        String remainder = line.substring(commandWord.length()).trim();
+        return remainder;
     }
 
     private static int parseIndexArg(String[] words, String actionName) throws FlorkingExceptions {
@@ -71,8 +81,7 @@ public class Parser {
             throw new FlorkingExceptions("Say properly which task you want " + actionName + ".");
         }
         try {
-            int index = Integer.parseInt(argument);
-            return index;
+            return Integer.parseInt(argument);
         } catch (NumberFormatException e) {
             throw new FlorkingExceptions("Oi, '" + argument + "' isn't a valid task number eh.");
         }
@@ -105,7 +114,7 @@ public class Parser {
      * @throws FlorkingExceptions if the description is missing or empty.
      */
     public static String parseTodoDescription(String line) throws FlorkingExceptions {
-        String description = line.length() > 4 ? line.substring(4).trim() : "";
+        String description = extractCommandArgument(line, "todo");
         if (description.isEmpty()) {
             throw new FlorkingExceptions("No todo description sia.");
         }
@@ -120,7 +129,7 @@ public class Parser {
      * @throws FlorkingExceptions if the description or due date is missing or empty.
      */
     public static String[] parseDeadlineParts(String line) throws FlorkingExceptions {
-        String remainder = line.length() > 8 ? line.substring(8).trim() : "";
+        String remainder = extractCommandArgument(line, "deadline");
         if (remainder.isEmpty()) {
             throw new FlorkingExceptions("No deadline description sia.");
         }
@@ -144,7 +153,7 @@ public class Parser {
      * @throws FlorkingExceptions if the description, start time, or end time is missing or empty.
      */
     public static String[] parseEventParts(String line) throws FlorkingExceptions {
-        String eventRemainder = line.length() > 5 ? line.substring(5).trim() : "";
+        String eventRemainder = extractCommandArgument(line, "event");
         if (eventRemainder.isEmpty()) {
             throw new FlorkingExceptions("No event description sia.");
         }
@@ -176,10 +185,18 @@ public class Parser {
      * @throws FlorkingExceptions if the keyword is missing or empty.
      */
     public static String parseFindKeyword(String line) throws FlorkingExceptions {
-        String keyword = line.length() > 4 ? line.substring(4).trim() : "";
+        String keyword = extractCommandArgument(line, "find");
         if (keyword.isEmpty()) {
             throw new FlorkingExceptions("What you want me find? Give me a keyword sia.");
         }
         return keyword;
+    }
+
+    private static String extractCommandArgument(String line, String commandWord) {
+        String trimmed = line.trim();
+        if (trimmed.length() <= commandWord.length()) {
+            return "";
+        }
+        return trimmed.substring(commandWord.length()).trim();
     }
 }

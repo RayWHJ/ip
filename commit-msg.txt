@@ -1,0 +1,19 @@
+Refine parser with better argument extraction
+
+Command parsing relies on hard-coded offsets scattered across
+several methods to extract arguments from user input, e.g. slicing
+strings at fixed positions for each command type.
+
+Hard-coded offsets are easy to get wrong when a command's format
+changes, and duplicating the same extraction logic across methods
+makes the parser harder to read and maintain.
+
+Let's,
+* remove the hard-coded command-length offsets
+* centralise argument extraction into a single shared method that
+  all command-parsing branches call into
+
+User-facing behaviour is unchanged; this is purely an internal
+readability and maintainability improvement.
+
+Verified with `./gradlew test --no-daemon` (all tests pass).
