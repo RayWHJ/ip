@@ -16,6 +16,9 @@ public class Task {
      * @param description the text describing the task.
      */
     public Task(String description) {
+        // A task without a meaningful description cannot be displayed or saved coherently.
+        assert description != null : "Task description must not be null";
+        assert !description.trim().isEmpty() : "Task description must not be blank";
         this.description = description;
         this.isDone = false;
     }
@@ -81,11 +84,14 @@ public class Task {
      * @return a string in the format "isDone | description".
      */
     public String toSaveFormat() {
+        // The save format relies on a real description; otherwise it would serialize an invalid task.
+        assert description != null : "Task description must be present before saving";
         return (isDone ? "1" : "0") + " | " + description;
     }
 
     @Override
     public String toString() {
+        assert description != null : "Task description must be present before display";
         return "[" + (isDone ? "X" : " ") + "] " + description;
     }
 }
