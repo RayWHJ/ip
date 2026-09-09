@@ -93,4 +93,24 @@ public class TaskListTest {
         list.add(new Todo("unrelated"));
         assertTrue(list.getTasksOn(java.time.LocalDate.of(2019, 12, 2)).isEmpty());
     }
+
+    @Test
+    public void findTasks_matchingKeyword_returnsOnlyMatchingTasks() {
+        TaskList list = new TaskList();
+        list.add(new Todo("read book"));
+        list.add(new Todo("return book"));
+        list.add(new Todo("walk dog"));
+
+        ArrayList<Task> matches = list.findTasks("book");
+        assertEquals(2, matches.size());
+        assertEquals("read book", matches.get(0).getDescription());
+        assertEquals("return book", matches.get(1).getDescription());
+    }
+
+    @Test
+    public void findTasks_noMatches_returnsEmptyList() {
+        TaskList list = new TaskList();
+        list.add(new Todo("walk dog"));
+        assertTrue(list.findTasks("book").isEmpty());
+    }
 }
