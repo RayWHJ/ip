@@ -15,7 +15,10 @@ public class Deadline extends Task {
      */
     public Deadline(String description, String by) {
         super(description);
+        // A deadline should always have some parsed or raw representation for the "by" value.
+        assert by != null : "Deadline must receive a non-null due value";
         this.by = FlorkDateTime.parse(by);
+        assert this.by != null : "Deadline should always hold a parsed by-value";
     }
 
     /**

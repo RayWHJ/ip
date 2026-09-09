@@ -1,5 +1,6 @@
 package florkofcows.task;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -29,5 +30,14 @@ public class TaskTest {
         Task task = new Task("read book");
         task.markAsDone();
         assertEquals("1 | read book", task.toSaveFormat());
+    }
+
+    @Test
+    public void taskList_addAndGet_validTaskWorks() {
+        TaskList taskList = new TaskList();
+        Task task = new Task("read book");
+
+        assertDoesNotThrow(() -> taskList.add(task));
+        assertEquals(task, taskList.get(0));
     }
 }

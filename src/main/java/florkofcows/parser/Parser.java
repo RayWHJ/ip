@@ -98,11 +98,14 @@ public class Parser {
         if (dateArg == null || dateArg.trim().isEmpty()) {
             throw new FlorkingExceptions("Which date? Try: on 2019-12-02");
         }
+        String normalizedDate = dateArg.trim();
+        // Parsing should only proceed for a non-blank date string; otherwise the method would reject invalid input.
+        assert !normalizedDate.isEmpty() : "Date string must not be blank after trimming";
         try {
-            return LocalDate.parse(dateArg.trim());
+            return LocalDate.parse(normalizedDate);
         } catch (DateTimeParseException e) {
             throw new FlorkingExceptions(
-                    "'" + dateArg.trim() + "' isn't a valid date. Use yyyy-MM-dd, e.g. 2019-12-02.");
+                    "'" + normalizedDate + "' isn't a valid date. Use yyyy-MM-dd, e.g. 2019-12-02.");
         }
     }
 
