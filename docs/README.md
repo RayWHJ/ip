@@ -215,7 +215,7 @@ Expected outcome:
 
 
 ## Image Credits
-FlorkOfCows User image: https://in.pinterest.com/pin/florkofcows-icon--5136987067416450/
+FlorkOfCows User image: "https://in.pinterest.com/pin/florkofcows-icon--5136987067416450/"
 
 
-FlorkOfCows image: https://merch.kawaentertainment.com/en-ca/collections/florkofcows?srsltid=AU7gw4VWBu3-Ch
+FlorkOfCows image: "https://merch.kawaentertainment.com/en-ca/collections/florkofcows?srsltid=AU7gw4VWBu3-Ch"

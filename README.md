@@ -25,6 +25,6 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
 
 **Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
 
-## Credits
-User image: https://in.pinterest.com/pin/florkofcows-icon--5136987067416450/
-FlorkOfCows image: https://merch.kawaentertainment.com/en-ca/collections/florkofcows?srsltid=AU7gw4VWBu3-Ch_7nMbdG9oau7dqLR15S2lrJeTsE6VYOk67CIuC5E1u
+## Image Credits
+User image: "https://in.pinterest.com/pin/florkofcows-icon--5136987067416450/"
+FlorkOfCows image: "https://merch.kawaentertainment.com/en-ca/collections/florkofcows?srsltid=AU7gw4VWBu3-Ch_7nMbdG9oau7dqLR15S2lrJeTsE6VYOk67CIuC5E1u"
