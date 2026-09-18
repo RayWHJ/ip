@@ -64,4 +64,9 @@ public class DialogBox extends HBox {
     public void setErrorBubble() {
         dialog.getStyleClass().add("error-label");
     }
+
+    /** Styles the welcome message so command names appear italicized in the chat bubble. */
+    public void setWelcomeStyle() {
+        dialog.getStyleClass().add("welcome-label");
+    }
 }

@@ -7,10 +7,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+
 /**
  * Controller for the main GUI.
  */
 public class MainWindow extends AnchorPane {
+    private static final String[] ITALIC_UPPER = {"𝐀", "𝐁", "𝐂", "𝐃", "𝐄", "𝐅", "𝐆", "𝐇", "𝐈", "𝐉", "𝐊", "𝐋", "𝐌", "𝐍", "𝐎", "𝐏", "𝐐", "𝐑", "𝐒", "𝐓", "𝐔", "𝐕", "𝐖", "𝐗", "𝐘", "𝐙"};
+    private static final String[] ITALIC_LOWER = {"𝐚", "𝐛", "𝐜", "𝐝", "𝐞", "𝐟", "𝐠", "𝐡", "𝐢", "𝐣", "𝐤", "𝐥", "𝐦", "𝐧", "𝐨", "𝐩", "𝐪", "𝐫", "𝐬", "𝐭", "𝐮", "𝐯", "𝐰", "𝐱", "𝐲", "𝐳"};
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -37,18 +40,43 @@ public class MainWindow extends AnchorPane {
                 "Wassup! Got something on your mind today?",
                 "",
                 "Here are some useful commands!",
-                "list - View tasks",
-                "todo TASK",
-                "deadline TASK /by DATE",
-                "event TASK /from DATE /at DATE",
-                "mark/unmark TASK",
-                "delete INDEX",
-                "find KEYWORD",
-                "on DATE",
-                "tag INDEX TAGNAME",
-                "bye",
-                "date format - yyyy-MM-dd");
-        dialogContainer.getChildren().add(DialogBox.getFlorkOfCowsDialog(welcomeMessage, florkOfCowsImage));
+                formatCommandLine("list", "View tasks"),
+                formatCommandLine("todo", "TASK"),
+                formatCommandLine("deadline", "TASK /by DATE"),
+                formatCommandLine("event", "TASK /from DATE /to DATE"),
+                formatCommandLine("mark", "TASK"),
+                formatCommandLine("unmark", "TASK"),
+                formatCommandLine("delete", "INDEX"),
+                formatCommandLine("find", "KEYWORD"),
+                formatCommandLine("on", "DATE"),
+                formatCommandLine("tag", "INDEX TAGNAME"),
+                formatCommandLine("bye", "Exit program"),
+                formatCommandLine("date format", "yyyy-MM-dd"));
+        DialogBox welcome = DialogBox.getFlorkOfCowsDialog(welcomeMessage, florkOfCowsImage);
+        welcome.setWelcomeStyle();
+        dialogContainer.getChildren().add(welcome);
+    }
+
+    private String formatCommandLine(String command, String details) {
+        if (details == null || details.isEmpty()) {
+            return italicize(command);
+        }
+        return italicize(command) + " - " + details;
+    }
+
+    private String italicize(String text) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < text.length(); i++) {
+            char ch = text.charAt(i);
+            if (ch >= 'A' && ch <= 'Z') {
+                builder.append(ITALIC_UPPER[ch - 'A']);
+            } else if (ch >= 'a' && ch <= 'z') {
+                builder.append(ITALIC_LOWER[ch - 'a']);
+            } else {
+                builder.append(ch);
+            }
+        }
+        return builder.toString();
     }
 
     /** Injects the FlorkOfCows instance */

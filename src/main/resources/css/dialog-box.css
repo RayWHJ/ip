@@ -13,6 +13,10 @@
     -fx-border-radius: 1em 1em 1em 0;
 }
 
+.welcome-label {
+    -fx-font-style: italic;
+}
+
 .error-label {
     -fx-background-color: c85050;
     -fx-text-fill: #fff5f5;
