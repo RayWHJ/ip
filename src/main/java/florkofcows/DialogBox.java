@@ -59,4 +59,9 @@ public class DialogBox extends HBox {
         db.flip();
         return db;
     }
+
+    /** Marks this message as an error so its text bubble uses a red background. */
+    public void setErrorBubble() {
+        dialog.getStyleClass().add("error-label");
+    }
 }

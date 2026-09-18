@@ -29,8 +29,22 @@ public class Ui {
     public void showWelcome(String banner) {
         showLine();
         System.out.println(banner);
-        System.out.println("Greetings! I'm FlorkOfCows.");
-        System.out.println("What do you need?");
+        System.out.println("Wassup! Got something on your mind today?");
+        System.out.println();
+        System.out.println("Here are some useful commands!");
+        System.out.println("Usage: <command> [arguments]");
+        System.out.println("1. list               - View tasks");
+        System.out.println("2. todo <description> - Add a todo");
+        System.out.println("3. event <name> /from <start> /to <end> - Schedule event");
+        System.out.println("4. mark/unmark <index> - Toggle task");
+        System.out.println("5. delete <index>     - Remove task");
+        System.out.println("6. find <keyword>     - Search tasks");
+        System.out.println("7. on <yyyy-MM-dd>    - View date");
+        System.out.println("8. bye                - Exit program");
+        System.out.println("9. tag <index> <tag> - Label task");
+        System.out.println("10. date format       - Show date format");
+        System.out.println();
+        System.out.println("Date format: yyyy-MM-dd");
         showLine();
     }
 

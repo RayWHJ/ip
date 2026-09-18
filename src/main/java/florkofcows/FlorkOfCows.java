@@ -19,6 +19,7 @@ public class FlorkOfCows {
     private final Ui ui;
     private final Storage storage;
     private TaskList tasks;
+    private boolean lastCommandError;
 
     /**
      * Creates a new FlorkOfCows instance with a fresh UI and storage.
@@ -77,6 +78,7 @@ public class FlorkOfCows {
     }
 
     public String getResponse(String input) {
+        lastCommandError = false;
         // Redirect System.out so ui.showX() calls write here instead of the console
         java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
         java.io.PrintStream originalOut = System.out;
@@ -86,11 +88,16 @@ public class FlorkOfCows {
             Command command = Parser.parse(input);
             command.execute(tasks, ui, storage);
         } catch (FlorkingExceptions e) {
+            lastCommandError = true;
             ui.showError(e.getMessage());
         } finally {
             System.setOut(originalOut); // always restore, even if something throws
         }
 
         return outContent.toString();
+    }
+
+    public boolean isLastCommandError() {
+        return lastCommandError;
     }
 }
