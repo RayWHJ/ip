@@ -71,4 +71,17 @@ public class EventTest {
     public void constructor_endBeforeStart_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> new Event("trip", "2019-12-05", "2019-12-03"));
     }
+
+    @Test
+    public void constructor_sameStartAndEnd_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Event("brief sync", "2019-12-05 0900", "2019-12-05 0900"));
+    }
+
+    @Test
+    public void getFromAndGetTo_returnFormattedBoundaries() {
+        Event e = new Event("meeting", "2019-12-02", "2019-12-03");
+        assertEquals("Dec 2 2019", e.getFrom());
+        assertEquals("Dec 3 2019", e.getTo());
+    }
 }

@@ -1,7 +1,9 @@
 T | 1 | borrow book | #do #fun #study
-E | 0 | sell books | #next #week | #qwef | #yesterday
+E | 0 | sell books | #qwef | #yesterday | #next #week
 D | 0 | move out | #do | #2019-12-23
 T | 0 | bin
 E | 0 | q | 12 | 12
 T | 0 | buqe
 E | 0 | event project sync | 2026-09-20 | 2026-09-21
+T | 0 | buy milk
+T | 0 | buy milk
