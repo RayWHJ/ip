@@ -103,4 +103,15 @@ public class ParserTest {
         assertEquals(1, Parser.parseTagIndex("tag 1 #fun #study"));
         assertArrayEquals(new String[] {"#fun", "#study"}, Parser.parseTagValues("tag 1 #fun #study"));
     }
+
+    @Test
+    public void parse_multipleSpacesInCommand_stillParses() throws FlorkingExceptions {
+        Command command = Parser.parse("  todo   read book   ");
+        assertTrue(command instanceof Command.AddTodoCommand);
+    }
+
+    @Test
+    public void parse_duplicateByClause_throwsException() {
+        assertThrows(FlorkingExceptions.class, () -> Parser.parse("deadline return book /by Sunday /by Monday"));
+    }
 }

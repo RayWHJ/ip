@@ -18,10 +18,11 @@ public class Task {
      * @param description the text describing the task.
      */
     public Task(String description) {
-        // A task without a meaningful description cannot be displayed or saved coherently.
-        assert description != null : "Task description must not be null";
-        assert !description.trim().isEmpty() : "Task description must not be blank";
-        this.description = description;
+        String normalizedDescription = description == null ? "" : description.trim();
+        if (normalizedDescription.isEmpty()) {
+            throw new IllegalArgumentException("Task description cannot be blank.");
+        }
+        this.description = normalizedDescription;
         this.isDone = false;
     }
 
@@ -32,7 +33,7 @@ public class Task {
      * @param isDone whether the task is already marked as done.
      */
     public Task(String description, boolean isDone) {
-        this.description = description;
+        this(description);
         this.isDone = isDone;
     }
 

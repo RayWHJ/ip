@@ -44,19 +44,21 @@ public class FlorkDateTime {
      */
     public static FlorkDateTime parse(String input) {
         assert input != null : "FlorkDateTime.parse() should not receive null input";
+        String trimmed = input.trim();
+
         try {
-            LocalDateTime dateTime = LocalDateTime.parse(input, INPUT_DATETIME);
+            LocalDateTime dateTime = LocalDateTime.parse(trimmed, INPUT_DATETIME);
             return new FlorkDateTime(dateTime, null, null);
         } catch (DateTimeParseException e) {
             // Not a datetime — fall through and try parsing as a date instead.
         }
 
         try {
-            return new FlorkDateTime(null, LocalDate.parse(input, INPUT_DATE), null);
+            return new FlorkDateTime(null, LocalDate.parse(trimmed, INPUT_DATE), null);
         } catch (DateTimeParseException e) {
             // Not a date either — fall through and treat input as plain text.
         }
-        return new FlorkDateTime(null, null, input);
+        return new FlorkDateTime(null, null, trimmed);
     }
 
     /**
@@ -109,5 +111,15 @@ public class FlorkDateTime {
             assert text != null : "Text-backed values should retain the original raw value";
             return null;
         }
+    }
+
+    /**
+     * Returns the underlying date-time when this value was recognized as a
+     * datetime, or null otherwise.
+     *
+     * @return the underlying LocalDateTime, or null for date-only or text values.
+     */
+    public LocalDateTime getDateTimeOrNull() {
+        return dateTime;
     }
 }

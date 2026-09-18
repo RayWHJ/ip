@@ -29,8 +29,14 @@ public class Parser {
 
         switch (commandType) {
             case BYE:
+                if (hasExtraArguments(words)) {
+                    throw new FlorkingExceptions("Bye doesn't take extra arguments.");
+                }
                 return new Command.ExitCommand();
             case LIST:
+                if (hasExtraArguments(words)) {
+                    throw new FlorkingExceptions("List doesn't take extra arguments.");
+                }
                 return new Command.ListCommand();
             case ON:
                 return new Command.OnDateCommand(parseDateArg(extractRemainingText(trimmed, commandWord)));
@@ -55,6 +61,10 @@ public class Parser {
             default:
                 throw new FlorkingExceptions("What are you trying to say?");
         }
+    }
+
+    private static boolean hasExtraArguments(String[] words) {
+        return words.length > 1 && !words[1].trim().isEmpty();
     }
 
     private static String requireNonBlank(String value, String message) throws FlorkingExceptions {
@@ -82,8 +92,15 @@ public class Parser {
         if (argument.isEmpty()) {
             throw new FlorkingExceptions("Say properly which task you want " + actionName + ".");
         }
+        if (argument.contains(" ")) {
+            throw new FlorkingExceptions("Task number should be a single integer, like 'mark 2'.");
+        }
         try {
-            return Integer.parseInt(argument);
+            int index = Integer.parseInt(argument);
+            if (index <= 0) {
+                throw new FlorkingExceptions("Task number must be positive.");
+            }
+            return index;
         } catch (NumberFormatException e) {
             throw new FlorkingExceptions("Eh, '" + argument + "' isn't a valid task number eh.");
         }
@@ -138,6 +155,9 @@ public class Parser {
         if (remainder.isEmpty()) {
             throw new FlorkingExceptions("No deadline description sia.");
         }
+        if (remainder.contains("/by") && !remainder.contains(" /by ")) {
+            throw new FlorkingExceptions("Use ' /by ' with spaces, like: deadline return book /by Sunday.");
+        }
         String[] parts = remainder.split(" /by ", 2);
         String deadlineDescription = parts[0].trim();
         if (deadlineDescription.isEmpty()) {
@@ -146,6 +166,9 @@ public class Parser {
         if (parts.length < 2 || parts[1].trim().isEmpty()) {
             throw new FlorkingExceptions(
                     "Deadline needs a '/by' date/time one eh, like deadline return book /by Sunday.");
+        }
+        if (parts[1].trim().contains(" /by ")) {
+            throw new FlorkingExceptions("Deadline can only have one '/by' value.");
         }
         return new String[] {deadlineDescription, parts[1].trim()};
     }
@@ -162,6 +185,9 @@ public class Parser {
         if (eventRemainder.isEmpty()) {
             throw new FlorkingExceptions("No event description sia.");
         }
+        if (eventRemainder.contains("/from") && !eventRemainder.contains(" /from ")) {
+            throw new FlorkingExceptions("Use ' /from ' with spaces, like: event meeting /from Mon 2pm /to 4pm.");
+        }
         String[] fromParts = eventRemainder.split(" /from ", 2);
         String eventDescription = fromParts[0].trim();
         if (eventDescription.isEmpty()) {
@@ -172,13 +198,23 @@ public class Parser {
                     "Event needs a '/from' time one eh, like event meeting /from Mon 2pm /to 4pm.");
         }
         String timeframe = fromParts[1].trim();
+        if (timeframe.contains("/to") && !timeframe.contains(" /to ")) {
+            throw new FlorkingExceptions("Use ' /to ' with spaces, like: event meeting /from Mon 2pm /to 4pm.");
+        }
         String[] toParts = timeframe.split(" /to ", 2);
         String from = toParts[0].trim();
         if (toParts.length < 2 || toParts[1].trim().isEmpty()) {
             throw new FlorkingExceptions(
                     "Event needs a '/to' time one eh, like event meeting /from Mon 2pm /to 4pm.");
         }
+        if (from.isEmpty() || toParts[1].trim().isEmpty()) {
+            throw new FlorkingExceptions(
+                    "Event needs a '/from' and '/to' time one eh, like event meeting /from Mon 2pm /to 4pm.");
+        }
         String to = toParts[1].trim();
+        if (to.contains(" /to ")) {
+            throw new FlorkingExceptions("Event can only have one '/to' value.");
+        }
         return new String[] {eventDescription, from, to};
     }
 
@@ -193,6 +229,9 @@ public class Parser {
         String keyword = extractCommandArgument(line, "find");
         if (keyword.isEmpty()) {
             throw new FlorkingExceptions("What you want me find? Give me a keyword sia.");
+        }
+        if (keyword.contains(" ")) {
+            return keyword;
         }
         return keyword;
     }

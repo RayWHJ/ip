@@ -22,11 +22,27 @@ public class Event extends Task {
      */
     public Event(String description, String from, String to) {
         super(description);
-        // Event bounds must be parsed into concrete date/time or text values before use.
-        assert from != null && to != null : "Event boundaries must not be null";
-        this.from = FlorkDateTime.parse(from);
-        this.to = FlorkDateTime.parse(to);
-        assert this.from != null && this.to != null : "Event bounds should be parsed successfully";
+        if (from == null || from.trim().isEmpty()) {
+            throw new IllegalArgumentException("Event start time cannot be blank.");
+        }
+        if (to == null || to.trim().isEmpty()) {
+            throw new IllegalArgumentException("Event end time cannot be blank.");
+        }
+        this.from = FlorkDateTime.parse(from.trim());
+        this.to = FlorkDateTime.parse(to.trim());
+        validateTimeRange();
+    }
+
+    private void validateTimeRange() {
+        LocalDate fromDate = from.getDateOrNull();
+        LocalDate toDate = to.getDateOrNull();
+        if (fromDate != null && toDate != null && toDate.isBefore(fromDate)) {
+            throw new IllegalArgumentException("Event end time must be after the start time.");
+        }
+        if (from.getDateTimeOrNull() != null && to.getDateTimeOrNull() != null
+                && !to.getDateTimeOrNull().isAfter(from.getDateTimeOrNull())) {
+            throw new IllegalArgumentException("Event end time must be later than the start time.");
+        }
     }
 
     /**

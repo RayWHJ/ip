@@ -73,6 +73,8 @@ public class FlorkOfCows {
                 isExit = command.isExit();
             } catch (FlorkingExceptions e) {
                 ui.showError(e.getMessage());
+            } catch (RuntimeException e) {
+                ui.showError("" + e.getMessage());
             }
         }
     }
@@ -90,6 +92,9 @@ public class FlorkOfCows {
         } catch (FlorkingExceptions e) {
             lastCommandError = true;
             ui.showError(e.getMessage());
+        } catch (RuntimeException e) {
+            lastCommandError = true;
+            ui.showError("" + e.getMessage());
         } finally {
             System.setOut(originalOut); // always restore, even if something throws
         }

@@ -2,6 +2,7 @@ package florkofcows.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -64,5 +65,10 @@ public class EventTest {
     public void isOccurringOn_neitherIsDate_returnsFalse() {
         Event e = new Event("party", "tonight", "late");
         assertFalse(e.isOccurringOn(LocalDate.of(2019, 12, 2)));
+    }
+
+    @Test
+    public void constructor_endBeforeStart_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> new Event("trip", "2019-12-05", "2019-12-03"));
     }
 }

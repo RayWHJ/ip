@@ -28,6 +28,8 @@ public abstract class Command {
             storage.save(tasks.getAll());
         } catch (IOException e) {
             throw new FlorkingExceptions("Couldn't save to disk: " + e.getMessage());
+        } catch (RuntimeException e) {
+            throw new FlorkingExceptions("Couldn't save to disk: " + e.getMessage());
         }
     }
 
