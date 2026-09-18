@@ -2,6 +2,7 @@ package florkofcows.task;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,5 +40,10 @@ public class TaskTest {
 
         assertDoesNotThrow(() -> taskList.add(task));
         assertEquals(task, taskList.get(0));
+    }
+
+    @Test
+    public void constructor_blankDescription_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> new Task("   "));
     }
 }
