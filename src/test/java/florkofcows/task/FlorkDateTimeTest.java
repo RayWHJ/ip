@@ -47,6 +47,24 @@ public class FlorkDateTimeTest {
     }
 
     @Test
+    public void parse_dateTimeBoundary_validatesAsDatetime() {
+        FlorkDateTime dt = FlorkDateTime.parse("2024-02-29 2359");
+        assertEquals("Feb 29 2024, 11:59pm", dt.toDisplayString());
+    }
+
+    @Test
+    public void getDateTimeOrNull_datetime_returnsDateTime() {
+        FlorkDateTime dt = FlorkDateTime.parse("2019-12-02 1800");
+        assertEquals("2019-12-02T18:00", dt.getDateTimeOrNull().toString());
+    }
+
+    @Test
+    public void getDateTimeOrNull_plainText_returnsNull() {
+        FlorkDateTime dt = FlorkDateTime.parse("whenever");
+        assertNull(dt.getDateTimeOrNull());
+    }
+
+    @Test
     public void toSaveFormat_dateTime_roundTripsToSameDisplay() {
         FlorkDateTime original = FlorkDateTime.parse("2019-12-02 1800");
         FlorkDateTime reloaded = FlorkDateTime.parse(original.toSaveFormat());

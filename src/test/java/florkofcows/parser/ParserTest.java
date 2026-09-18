@@ -114,4 +114,29 @@ public class ParserTest {
     public void parse_duplicateByClause_throwsException() {
         assertThrows(FlorkingExceptions.class, () -> Parser.parse("deadline return book /by Sunday /by Monday"));
     }
+
+    @Test
+    public void parse_listWithExtraArgument_throwsException() {
+        assertThrows(FlorkingExceptions.class, () -> Parser.parse("list now"));
+    }
+
+    @Test
+    public void parse_byeWithExtraArgument_throwsException() {
+        assertThrows(FlorkingExceptions.class, () -> Parser.parse("bye now"));
+    }
+
+    @Test
+    public void parse_markWithZeroIndex_throwsException() {
+        assertThrows(FlorkingExceptions.class, () -> Parser.parse("mark 0"));
+    }
+
+    @Test
+    public void parse_findWithWhitespaceKeyword_returnsKeyword() throws FlorkingExceptions {
+        assertEquals("book", Parser.parseFindKeyword("find book"));
+    }
+
+    @Test
+    public void parse_tagValues_invalidTagFormat_throwsException() {
+        assertThrows(FlorkingExceptions.class, () -> Parser.parseTagValues("tag 1 bad#tag"));
+    }
 }

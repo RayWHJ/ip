@@ -51,4 +51,10 @@ public class DeadlineTest {
         Deadline d = new Deadline("submit", "no idea");
         assertFalse(d.isOccurringOn(LocalDate.of(2019, 12, 2)));
     }
+
+    @Test
+    public void getBy_returnsOriginalDisplayValue() {
+        Deadline d = new Deadline("submit report", "2019-12-02");
+        assertEquals("Dec 2 2019", d.getBy());
+    }
 }

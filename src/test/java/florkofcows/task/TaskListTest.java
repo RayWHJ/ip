@@ -125,4 +125,34 @@ public class TaskListTest {
         assertTrue(tagged.hasTag("#study"));
         assertEquals(2, tagged.getTags().size());
     }
+
+    @Test
+    public void tag_duplicateTag_doesNotDuplicate() throws FlorkingExceptions {
+        TaskList list = new TaskList();
+        list.add(new Todo("read book"));
+
+        Task tagged = list.tag(1, "#fun", "#fun");
+
+        assertEquals(1, tagged.getTags().size());
+    }
+
+    @Test
+    public void getAll_returnsUnderlyingList() {
+        TaskList list = new TaskList();
+        list.add(new Todo("read book"));
+
+        assertEquals(1, list.getAll().size());
+        assertEquals("read book", list.getAll().get(0).getDescription());
+    }
+
+    @Test
+    public void findTasks_keywordMatchesSubstring_returnsMatchingTasks() {
+        TaskList list = new TaskList();
+        list.add(new Todo("read book"));
+        list.add(new Todo("book club"));
+
+        ArrayList<Task> matches = list.findTasks("boo");
+
+        assertEquals(2, matches.size());
+    }
 }
