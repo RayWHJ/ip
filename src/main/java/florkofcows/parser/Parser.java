@@ -22,7 +22,7 @@ public class Parser {
      * @throws FlorkingExceptions if the input is invalid or unrecognized.
      */
     public static Command parse(String fullCommand) throws FlorkingExceptions {
-        String trimmed = requireNonBlank(fullCommand, "What you saying? I don't get sia.");
+        String trimmed = requireNonBlank(fullCommand, "What are you trying to say?");
         String[] words = trimmed.split("\\s+", 2);
         String commandWord = words[0].toUpperCase();
         CommandType commandType = parseCommandType(commandWord);
@@ -53,7 +53,7 @@ public class Parser {
             case TAG:
                 return new Command.TagCommand(parseTagIndex(trimmed), parseTagValues(trimmed));
             default:
-                throw new FlorkingExceptions("What you saying? I don't get sia.");
+                throw new FlorkingExceptions("What are you trying to say?");
         }
     }
 
@@ -68,7 +68,7 @@ public class Parser {
         try {
             return CommandType.valueOf(commandWord);
         } catch (IllegalArgumentException e) {
-            throw new FlorkingExceptions("What you saying? I don't get sia.");
+            throw new FlorkingExceptions("What are you trying to say?");
         }
     }
 
@@ -85,7 +85,7 @@ public class Parser {
         try {
             return Integer.parseInt(argument);
         } catch (NumberFormatException e) {
-            throw new FlorkingExceptions("Oi, '" + argument + "' isn't a valid task number eh.");
+            throw new FlorkingExceptions("Eh, '" + argument + "' isn't a valid task number eh.");
         }
     }
 

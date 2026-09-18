@@ -6,13 +6,13 @@
 .text-field {
     -fx-background-color: #3a3936;   /* slightly lighter input field */
     -fx-text-fill: #e8e6dc;          /* warm off-white text */
-    -fx-font: 14px "Arial";
+    -fx-font: 15px "Arial";
 }
 
 .button {
     -fx-background-color: #da7756;   /* Claude's signature terracotta */
     -fx-text-fill: #262624;
-    -fx-font: italic bold 12px "Arial";
+    -fx-font: italic bold 13px "Arial";
 }
 
 .button:hover {

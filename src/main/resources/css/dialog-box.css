@@ -13,6 +13,14 @@
     -fx-border-radius: 1em 1em 1em 0;
 }
 
+.error-label {
+    -fx-background-color: c85050;
+    -fx-text-fill: #fff5f5;
+    -fx-border-color: #d95a5a;
+    -fx-background-radius: 1em 1em 1em 0;
+    -fx-border-radius: 1em 1em 1em 0;
+}
+
 #displayPicture {
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.5, 5, 5);
     -fx-scale-x: 1;
