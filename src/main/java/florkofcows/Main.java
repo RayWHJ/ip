@@ -35,6 +35,7 @@ public class Main extends Application {
             stage.setX((screenBounds.getWidth() - width) / 2);
             stage.setY((screenBounds.getHeight() - height) / 2);
             fxmlLoader.<MainWindow>getController().setFlorkOfCows(florkOfCows); // inject the FlorkOfCows instance
+            stage.setTitle("FlorkOfCows");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

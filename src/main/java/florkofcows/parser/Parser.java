@@ -227,11 +227,11 @@ public class Parser {
     public static String[] parseTagValues(String line) throws FlorkingExceptions {
         String remainder = extractCommandArgument(line, "tag").trim();
         if (remainder.isEmpty()) {
-            throw new FlorkingExceptions("No tag to add? Try: tag 2 #fun");
+            throw new FlorkingExceptions("Use something like 'tag 2 #fun'");
         }
         String[] tokens = remainder.split("\\s+");
         if (tokens.length < 2) {
-            throw new FlorkingExceptions("No tag to add? Try: tag 2 #fun");
+            throw new FlorkingExceptions("Use something like 'tag 2 #fun'");
         }
         String[] tags = new String[tokens.length - 1];
         for (int i = 1; i < tokens.length; i++) {
