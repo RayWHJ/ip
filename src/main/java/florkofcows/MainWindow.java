@@ -100,5 +100,9 @@ public class MainWindow extends AnchorPane {
         }
         dialogContainer.getChildren().add(reply);
         userInput.clear();
+
+        if (florkOfCows.isExitRequested()) {
+            javafx.application.Platform.exit();
+        }
     }
 }

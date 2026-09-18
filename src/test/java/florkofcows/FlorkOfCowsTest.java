@@ -25,4 +25,15 @@ public class FlorkOfCowsTest {
         assertTrue(app.isLastCommandError());
         assertTrue(output.contains("No todo description") || output.contains("That command blew up"));
     }
+
+    @Test
+    public void getResponse_byeCommand_requestsExit() {
+        FlorkOfCows app = new FlorkOfCows();
+
+        String output = app.getResponse("bye");
+
+        assertFalse(app.isLastCommandError());
+        assertTrue(app.isExitRequested());
+        assertTrue(output.contains("See ya!"));
+    }
 }
